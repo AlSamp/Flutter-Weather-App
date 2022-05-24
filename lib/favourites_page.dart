@@ -7,9 +7,6 @@ class FavouritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Infinite List"),
-      ),
       body: ListView.builder(
         itemBuilder: (context, index) {
           return ListTile(
