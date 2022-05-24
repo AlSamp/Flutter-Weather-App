@@ -19,11 +19,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       debugPrint("Index $index was pressed"); // Verifying tabbar button presses
 
       if (gCurrentPage == 0) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: ((context) => HomePage())));
+        Navigator.push(context,
+            MaterialPageRoute(builder: ((context) => const HomePage())));
       } else if (gCurrentPage == 1) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: ((context) => SearchPage())));
+        Navigator.push(context,
+            MaterialPageRoute(builder: ((context) => const SearchPage())));
       } else if (gCurrentPage == 2) {
         Navigator.push(context,
             MaterialPageRoute(builder: ((context) => FavouritesPage())));
@@ -33,26 +33,24 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.star),
-            label: 'Favourtites',
-          ),
-        ],
-        currentIndex: gCurrentPage,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
-      ),
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: 'Search',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.star),
+          label: 'Favourtites',
+        ),
+      ],
+      currentIndex: gCurrentPage,
+      selectedItemColor: Colors.amber[800],
+      onTap: _onItemTapped,
     );
   }
 }

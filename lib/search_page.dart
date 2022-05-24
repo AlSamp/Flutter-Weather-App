@@ -11,9 +11,17 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Text("This is the search page"),
-      bottomNavigationBar: CustomNavigationBar(),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text("This is the search Page")),
+        body: Container(
+          color: Colors.blue,
+          child: Center(
+            child: Text("Search Page"),
+          ),
+        ),
+        bottomNavigationBar: CustomNavigationBar(),
+      ),
     );
   }
 }
