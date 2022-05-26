@@ -3,6 +3,7 @@ import 'package:mobile_computing_assignment/globals.dart';
 import 'geolocation.dart';
 import 'package:http/http.dart' as http; // clarify function origin
 import 'dart:convert'; //json conversion
+import 'package:weather_icons/weather_icons.dart';
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage({Key? key}) : super(key: key);
@@ -14,7 +15,9 @@ class WeatherPage extends StatefulWidget {
 class _WeatherPageState extends State<WeatherPage> {
   String latitude = "";
   String longitude = "";
-  var url;
+
+  String location = "";
+  String temperature = "";
 
 // gets user geolocation information
   getCurrentLocation() async {
@@ -25,7 +28,7 @@ class _WeatherPageState extends State<WeatherPage> {
     });
   }
 
-  void getWeather() async {
+  void getLocalWeather() async {
     http.Response response = await http.get(
       Uri.parse(
           "http://api.airvisual.com/v2/nearest_city?lat=$latitude&lon=$longitude&key=$kApiKey"),
@@ -37,6 +40,17 @@ class _WeatherPageState extends State<WeatherPage> {
       debugPrint(response.body);
       var test = jsonDecode(locationInfo)["data"]["city"];
       print("Json test output  = $test");
+      var test2 =
+          jsonDecode(locationInfo)["data"]["current"]["pollution"]["ts"];
+
+      location = jsonDecode(locationInfo)["data"]["city"]; // user
+      // data.current.weather.tp - temperature
+      temperature = jsonDecode(locationInfo)["data"]["current"]["weather"]["tp"]
+          .toString();
+
+      // data.current.weather.ic -  screen picture to be disvar
+
+      print("Json test2 ouptut = $test2");
     } else {
       debugPrint(response.statusCode.toString());
     }
@@ -47,34 +61,48 @@ class _WeatherPageState extends State<WeatherPage> {
   void initState() {
     super.initState();
     getCurrentLocation();
-    getWeather();
+    getLocalWeather();
   }
 
   @override
   Widget build(BuildContext context) {
-    getWeather();
+    getLocalWeather();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Weather Page"),
-      ),
-      body: Column(
-        children: [
-          Text(longitude),
-          Text(latitude),
-          //Text(url.toString()),
-          TextButton(
-            onPressed: () => {
-              getCurrentLocation(),
-            },
-            child: Center(
-              child: Container(
-                color: Colors.purple,
-                child: const Text("Get Weather"),
+      backgroundColor: Colors.black,
+      //appBar: AppBar(
+      //  title: const Text("Weather Page"),
+      //),
+      // TODO : Design display cards and output data
+
+      body: Container(
+        // ignore: prefer_const_constructors
+        // ignore: prefer_const_constructors
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: const AssetImage("lib/images/background (6).jpg"),
+              fit: BoxFit.cover),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(),
+              Center(child: Text(location)),
+              Text(temperature),
+              TextButton(
+                onPressed: () => {
+                  getLocalWeather(),
+                },
+                child: Container(
+                  child: const Text("Get Weather"),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
+
+// background images from https://wallpaperaccess.com/orange-phone
