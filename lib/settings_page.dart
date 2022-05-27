@@ -15,7 +15,7 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: const Text("Settings"),
       ),
-      body: WeatherCard(),
+      // body: MainWeatherCard(),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_computing_assignment/globals.dart';
+import 'package:mobile_computing_assignment/weather_card.dart';
 import 'geolocation.dart';
 import 'package:http/http.dart' as http; // clarify function origin
 import 'dart:convert'; //json conversion
@@ -18,6 +19,7 @@ class _WeatherPageState extends State<WeatherPage> {
 
   String location = "";
   String temperature = "";
+  String icon = "";
 
 // gets user geolocation information
   getCurrentLocation() async {
@@ -48,9 +50,10 @@ class _WeatherPageState extends State<WeatherPage> {
       temperature = jsonDecode(locationInfo)["data"]["current"]["weather"]["tp"]
           .toString();
 
-      // data.current.weather.ic -  screen picture to be disvar
-
+      // data.current.weather.ic -  screen picture to be displayed
+      icon = jsonDecode(locationInfo)["data"]["current"]["weather"]["ic"];
       print("Json test2 ouptut = $test2");
+      print("Test output for icon = $icon");
     } else {
       debugPrint(response.statusCode.toString());
     }
@@ -82,27 +85,29 @@ class _WeatherPageState extends State<WeatherPage> {
               image: const AssetImage("lib/images/background (6).jpg"),
               fit: BoxFit.cover),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(),
-              Center(child: Text(location)),
-              Text(temperature),
-              TextButton(
-                onPressed: () => {
-                  getLocalWeather(),
-                },
-                child: Container(
-                  child: const Text("Get Weather"),
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: MainWeatherCard(location, temperature, icon),
       ),
     );
   }
 }
 
-// background images from https://wallpaperaccess.com/orange-phone
+// background images from https://wallpaperaccess.com/orange-phoneCenter(
+
+
+        //   child: Column(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       Container(),
+        //       Center(child: Text(location)),
+        //       Text(temperature),
+        //       TextButton(
+        //         onPressed: () => {
+        //           getLocalWeather(),
+        //         },
+        //         child: Container(
+        //           child: const Text("Get Weather"),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // )

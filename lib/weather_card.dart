@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:weather_icons/weather_icons.dart';
+import 'display_weather_icons.dart';
 
-class WeatherCard extends StatelessWidget {
-  const WeatherCard({Key? key}) : super(key: key);
+class MainWeatherCard extends StatelessWidget {
+  late String mLocation;
+  //late String mWeatherStatus;
+  late String mTemperature;
+  late String mIcon;
+
+  MainWeatherCard(String location, String temperature, String icon) {
+    mLocation = location;
+    //mWeatherStatus = weatherStatus;
+    mTemperature = temperature;
+    mIcon = icon;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +28,7 @@ class WeatherCard extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Text(style: TextStyle(fontSize: 30), "Location"),
+              Text(style: TextStyle(fontSize: 30), "$mLocation"),
               SizedBox(
                 height: 1,
                 child: Container(
@@ -25,11 +36,14 @@ class WeatherCard extends StatelessWidget {
                 ),
               ),
               BoxedIcon(
-                WeatherIcons.rain,
+                (DisplayerWeatherIcon(mIcon)
+                    .displayIcon()), //WeatherIcons.cloudy,
                 size: 200,
               ),
-              Text(style: TextStyle(fontSize: 25), "Sunny"),
-              Text(style: TextStyle(fontSize: 50), "16°"),
+              Text(
+                  style: TextStyle(fontSize: 25),
+                  (DisplayerWeatherIcon(mIcon).displayStatus()).toString()),
+              Text(style: TextStyle(fontSize: 50), "$mTemperature°"),
               ExpansionTile(
                 //expandedCrossAxisAlignment: CrossAxisAlignment.center,
                 title: Text(''),
@@ -51,3 +65,7 @@ class WeatherCard extends StatelessWidget {
 
 
 // weather icons from https://erikflowers.github.io/weather-icons/
+
+// TODO : Main Weather Card
+// TODO : Search Weather Card
+// TODO : Favourites Weather Card
