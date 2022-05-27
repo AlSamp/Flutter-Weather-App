@@ -7,12 +7,24 @@ class MainWeatherCard extends StatelessWidget {
   //late String mWeatherStatus;
   late String mTemperature;
   late String mIcon;
+  late double mWindSpeed;
+  late int mWindDirection;
+  late int mHumidity;
 
-  MainWeatherCard(String location, String temperature, String icon) {
+  MainWeatherCard(
+    String location,
+    String temperature,
+    String icon,
+    double windSpeed,
+    int windDirection,
+    int humidity,
+  ) {
     mLocation = location;
-    //mWeatherStatus = weatherStatus;
     mTemperature = temperature;
     mIcon = icon;
+    mWindSpeed = windSpeed;
+    mWindDirection = windDirection;
+    mHumidity = humidity;
   }
 
   @override
@@ -36,25 +48,50 @@ class MainWeatherCard extends StatelessWidget {
                 ),
               ),
               BoxedIcon(
-                (DisplayerWeatherIcon(mIcon)
-                    .displayIcon()), //WeatherIcons.cloudy,
+                (DisplayerWeatherIcon(mIcon) //Display Weather Icon
+                    .displayIcon()),
                 size: 200,
               ),
               Text(
-                  style: TextStyle(fontSize: 25),
-                  (DisplayerWeatherIcon(mIcon).displayStatus()).toString()),
-              Text(style: TextStyle(fontSize: 50), "$mTemperature°"),
-              ExpansionTile(
-                //expandedCrossAxisAlignment: CrossAxisAlignment.center,
-                title: Text(''),
-                tilePadding: EdgeInsets.all(0),
-
-                children: <Widget>[
-                  Text('Big Bang'),
-                  Text('Birth of the Sun'),
-                  Text('Earth is Born'),
-                ],
+                // Display weather status
+                style: TextStyle(fontSize: 25),
+                (DisplayerWeatherIcon(mIcon).displayStatus()).toString(),
               ),
+              Text(style: TextStyle(fontSize: 100), "$mTemperature°"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      BoxedIcon(
+                        WeatherIcons.strong_wind,
+                        size: 50,
+                      ),
+                      Text(style: TextStyle(fontSize: 20), "$mWindSpeed/mph"),
+                      Text("Windspeed"),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      WindIcon(
+                        degree: mWindDirection,
+                        size: 65,
+                      ),
+                      Text("Wind Direction"),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      BoxedIcon(
+                        WeatherIcons.humidity,
+                        size: 40,
+                      ),
+                      Text(style: TextStyle(fontSize: 30), "$mHumidity"),
+                      Text("Humidity"),
+                    ],
+                  ),
+                ],
+              )
             ],
           ),
         ),
@@ -63,9 +100,22 @@ class MainWeatherCard extends StatelessWidget {
   }
 }
 
-
 // weather icons from https://erikflowers.github.io/weather-icons/
 
 // TODO : Main Weather Card
 // TODO : Search Weather Card
 // TODO : Favourites Weather Card
+
+
+
+              // ExpansionTile(
+              //   //expandedCrossAxisAlignment: CrossAxisAlignment.center,
+              //   title: Text(''),
+              //   tilePadding: EdgeInsets.all(0),
+
+              //   children: <Widget>[
+              //     Text('Big Bang'),
+              //     Text('Birth of the Sun'),
+              //     Text('Earth is Born'),
+              //   ],
+              // ),

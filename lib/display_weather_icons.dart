@@ -70,5 +70,6 @@ class DisplayerWeatherIcon {
   }
 }
 
+
 // Weather Icons - https://erikflowers.github.io/weather-icons/
 // Status Codes - https://api-docs.iqair.com/?version=latest#important-notes

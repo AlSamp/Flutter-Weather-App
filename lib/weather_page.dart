@@ -4,7 +4,6 @@ import 'package:mobile_computing_assignment/weather_card.dart';
 import 'geolocation.dart';
 import 'package:http/http.dart' as http; // clarify function origin
 import 'dart:convert'; //json conversion
-import 'package:weather_icons/weather_icons.dart';
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage({Key? key}) : super(key: key);
@@ -20,6 +19,9 @@ class _WeatherPageState extends State<WeatherPage> {
   String location = "";
   String temperature = "";
   String icon = "";
+  double windSpeed = 0.0;
+  int windDirection = 0;
+  int humidity = 0;
 
 // gets user geolocation information
   getCurrentLocation() async {
@@ -45,15 +47,15 @@ class _WeatherPageState extends State<WeatherPage> {
       var test2 =
           jsonDecode(locationInfo)["data"]["current"]["pollution"]["ts"];
 
-      location = jsonDecode(locationInfo)["data"]["city"]; // user
       // data.current.weather.tp - temperature
+      location = jsonDecode(locationInfo)["data"]["city"]; // user
       temperature = jsonDecode(locationInfo)["data"]["current"]["weather"]["tp"]
           .toString();
-
-      // data.current.weather.ic -  screen picture to be displayed
       icon = jsonDecode(locationInfo)["data"]["current"]["weather"]["ic"];
-      print("Json test2 ouptut = $test2");
-      print("Test output for icon = $icon");
+      windSpeed = jsonDecode(locationInfo)["data"]["current"]["weather"]["ws"];
+      windDirection =
+          jsonDecode(locationInfo)["data"]["current"]["weather"]["wd"];
+      humidity = jsonDecode(locationInfo)["data"]["current"]["weather"]["hu"];
     } else {
       debugPrint(response.statusCode.toString());
     }
@@ -85,7 +87,8 @@ class _WeatherPageState extends State<WeatherPage> {
               image: const AssetImage("lib/images/background (6).jpg"),
               fit: BoxFit.cover),
         ),
-        child: MainWeatherCard(location, temperature, icon),
+        child: MainWeatherCard(
+            location, temperature, icon, windSpeed, windDirection, humidity),
       ),
     );
   }
