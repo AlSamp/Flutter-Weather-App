@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'weather_card.dart';
+import 'weather_card_main.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);

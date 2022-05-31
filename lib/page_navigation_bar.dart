@@ -4,6 +4,7 @@ import 'weather_page.dart';
 import 'search_page.dart';
 import 'favourites_page.dart';
 import 'settings_page.dart';
+import 'package:sizer/sizer.dart';
 
 class ScreenNavigation extends StatefulWidget {
   const ScreenNavigation({Key? key}) : super(key: key);
@@ -34,7 +35,7 @@ class _ScreenNavigationState extends State<ScreenNavigation> {
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.shifting, // Animation for navbar
             selectedItemColor: Colors.white,
-            //iconSize: 40,
+            iconSize: 4.h,
             unselectedItemColor: Colors.grey,
             onTap: (index) => setState(() => navBarIndex =
                 index), // when user clicks on navbar element record the selected index

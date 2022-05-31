@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_computing_assignment/globals.dart';
-import 'package:mobile_computing_assignment/weather_card.dart';
+import 'package:mobile_computing_assignment/weather_card_main.dart';
 import 'geolocation.dart';
 import 'package:http/http.dart' as http; // clarify function origin
 import 'dart:convert'; //json conversion
@@ -62,7 +62,6 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   @override
-  //  when page is first initialised,get user geolocation information
   void initState() {
     super.initState();
     getCurrentLocation();
@@ -71,6 +70,7 @@ class _WeatherPageState extends State<WeatherPage> {
 
   @override
   Widget build(BuildContext context) {
+    //  when page is first initialised,get user geolocation information
     getLocalWeather();
     return Scaffold(
       backgroundColor: Colors.black,
@@ -84,11 +84,21 @@ class _WeatherPageState extends State<WeatherPage> {
         // ignore: prefer_const_constructors
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: const AssetImage("lib/images/background (6).jpg"),
+              image: const AssetImage("lib/images/background (5).jpg"),
               fit: BoxFit.cover),
         ),
-        child: MainWeatherCard(
-            location, temperature, icon, windSpeed, windDirection, humidity),
+        child: TextButton(
+          onPressed: () {
+            setState(() {
+              MainWeatherCard(location, temperature, icon, windSpeed,
+                  windDirection, humidity);
+            });
+
+            debugPrint("Weather card pressed");
+          },
+          child: MainWeatherCard(
+              location, temperature, icon, windSpeed, windDirection, humidity),
+        ),
       ),
     );
   }

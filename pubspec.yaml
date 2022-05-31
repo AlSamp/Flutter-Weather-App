@@ -37,6 +37,7 @@ dependencies:
   geolocator: ^8.2.1 # Used for app geoloaction
   http: ^0.13.4      # Used for url calls
   weather_icons: ^3.0.0 # Weather icons
+  sizer: ^2.0.15  # Keep size the same across devices
 
 dev_dependencies:
   flutter_test:
