@@ -74,11 +74,6 @@ class _WeatherPageState extends State<WeatherPage> {
     getLocalWeather();
     return Scaffold(
       backgroundColor: Colors.black,
-      //appBar: AppBar(
-      //  title: const Text("Weather Page"),
-      //),
-      // TODO : Design display cards and output data
-
       body: Container(
         // ignore: prefer_const_constructors
         // ignore: prefer_const_constructors
@@ -93,7 +88,6 @@ class _WeatherPageState extends State<WeatherPage> {
               MainWeatherCard(location, temperature, icon, windSpeed,
                   windDirection, humidity);
             });
-
             debugPrint("Weather card pressed");
           },
           child: MainWeatherCard(
@@ -105,22 +99,3 @@ class _WeatherPageState extends State<WeatherPage> {
 }
 
 // background images from https://wallpaperaccess.com/orange-phoneCenter(
-
-
-        //   child: Column(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       Container(),
-        //       Center(child: Text(location)),
-        //       Text(temperature),
-        //       TextButton(
-        //         onPressed: () => {
-        //           getLocalWeather(),
-        //         },
-        //         child: Container(
-        //           child: const Text("Get Weather"),
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // )
