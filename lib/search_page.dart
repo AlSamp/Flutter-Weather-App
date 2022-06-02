@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; // clarify function origin
 import 'dart:convert'; //json conversion
 import 'globals.dart';
+import 'search_states_page.dart';
+import 'package:sizer/sizer.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -13,7 +15,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List<String> apiContries = []; // empty list
+  List<String> apiCountries = []; // empty list
   late int numCountries = 0;
   //Map<String, dynamic> apiCountries = {};
   //var apiCountries;
@@ -33,7 +35,7 @@ class _SearchPageState extends State<SearchPage> {
       for (int i = 0; i < 200; i++) {
         try {
           print(jsonDecode(country)["data"][i]["country"]);
-          apiContries.add(jsonDecode(country)["data"][i]["country"]);
+          apiCountries.add(jsonDecode(country)["data"][i]["country"]);
           numCountries++;
         } catch (error) {
           // There will be a read access violation so break the for loop
@@ -47,6 +49,7 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {}); // this update the screen with the list of countries
   }
 
+  final ScrollController _controllerOne = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -55,24 +58,48 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: numCountries,
-        itemBuilder: (BuildContext, index) {
-          return TextButton(
-            onPressed: () {},
-            style: TextButton.styleFrom(
-              minimumSize: Size.zero,
-              padding: EdgeInsets.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            child: Card(
-              child: ListTile(
-                title: Text(apiContries[index]),
-                trailing: Text("..."),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "Countries",
+        ),
+        backgroundColor: Colors.black,
+      ),
+      body: Scrollbar(
+        //controller: _controllerOne,
+        //thumbVisibility: true,
+        //trackVisibility: true,
+        //thickness: 0.5.h,
+        child: ListView.builder(
+          itemCount: numCountries,
+          itemBuilder: (BuildContext, index) {
+            return TextButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                minimumSize: Size.zero,
+                padding: EdgeInsets.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-            ),
-          );
-        },
+              child: Card(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            SearchStatesPage(apiCountries[index]),
+                      ),
+                    );
+                  },
+                  child: ListTile(
+                    title: Text(apiCountries[index]),
+                    trailing: Text("..."),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

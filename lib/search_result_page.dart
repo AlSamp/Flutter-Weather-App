@@ -2,57 +2,68 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; // clarify function origin
 import 'dart:convert'; //json conversion
 import 'globals.dart';
+import 'package:weather_icons/weather_icons.dart';
+import 'display_weather_icons.dart';
+import 'package:sizer/sizer.dart';
 
-class SearchCitiesPage extends StatefulWidget {
+class SearchResultsPage extends StatefulWidget {
   late String mSelectedCountry;
   late String mSelectedState;
   late String mSelectedCity;
 
-  SearchCitiesPage(String country, String state, String city) {
+  SearchResultsPage(String country, String state, String city) {
     mSelectedCountry = country;
     mSelectedState = state;
     mSelectedCity = city;
   }
 
   @override
-  State<SearchCitiesPage> createState() => _SearchCitiesPageState();
+  State<SearchResultsPage> createState() => _SearchResultsPageState();
 }
 
-class _SearchCitiesPageState extends State<SearchCitiesPage> {
+class _SearchResultsPageState extends State<SearchResultsPage> {
   //_SearchStatesPageState(String selectedCountry) {
   //  mSelectedCountry = selectedCountry;
   //}
-  List<String> apiCities = []; // empty list
-  late int numCities = 0;
+
   late String mCountry = widget.mSelectedCountry;
   late String mState = widget.mSelectedState;
   late String mCity = widget.mSelectedCity;
-  void countryCheck() {
-    if (mCountry == "United Kingdom") {
-      mCountry = "UK";
-    }
-  }
+  late double mLongitude = 0;
+  late double mLatitude = 0;
+  late String mTargetLocation;
+  String mLocation = "";
+  String mTemperature = "";
+  String mIcon = "";
+  double mWindSpeed = 0.0;
+  int mWindDirection = 0;
+  int mHumidity = 0;
 
-  void getCountries() async {
-    countryCheck(); // check that the country is correct for json
+  void getTargetLocation() async {
+    // check that the country is correct for json
     http.Response response = await http.get(
       Uri.parse(
           "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey"),
     );
+    debugPrint(
+        "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey");
+    debugPrint("Search results page json result" + response.body);
+
+    mTargetLocation = response.body;
 
     if (response.statusCode == 200) // 200 is http code for success
     {
-      final cities = response.body;
-
-      for (int i = 0; i < 200; i++) {
-        try {
-          apiCities.add(jsonDecode(cities)["data"][i]["city"]);
-          numCities++;
-        } catch (error) {
-          // There will be a read access violation so break the for loop
-          break;
-        }
-      }
+      mLocation = jsonDecode(mTargetLocation)["data"]["city"]; // user
+      mTemperature = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
+              ["tp"]
+          .toString();
+      mIcon = jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ic"];
+      mWindSpeed =
+          jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ws"];
+      mWindDirection =
+          jsonDecode(mTargetLocation)["data"]["current"]["weather"]["wd"];
+      mHumidity =
+          jsonDecode(mTargetLocation)["data"]["current"]["weather"]["hu"];
     } else {
       debugPrint(response.statusCode.toString());
     }
@@ -63,19 +74,151 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
   @override
   void initState() {
     super.initState();
-    getCountries();
+    getTargetLocation();
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.black,
-        title: Text("Cities in $mState"),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Result"),
+          backgroundColor: Colors.black,
+          centerTitle: true,
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: const AssetImage("lib/images/background (5).jpg"),
+                fit: BoxFit.cover),
+          ),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.all(
+                  1.5.h,
+                ),
+                padding: EdgeInsets.all(1.5.h),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(
+                    185,
+                    158,
+                    158,
+                    158,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    3.0.h,
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 30,
+                        ),
+                        mCity),
+                    SizedBox(
+                      height: 1,
+                      width: 50.h,
+                      child: Container(
+                        color: Colors.white,
+                      ),
+                    ),
+                    BoxedIcon(
+                      //Display Weather Icon
+
+                      (DisplayerWeatherIcon(mIcon).displayIcon()),
+                      color: Colors.black,
+                      size: 25.h,
+                    ),
+                    Text(
+                      // Display weather status
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.black,
+                      ),
+                      (DisplayerWeatherIcon(mIcon).displayStatus()).toString(),
+                    ),
+                    Text(
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 100,
+                        ),
+                        "$mTemperature°"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          children: [
+                            BoxedIcon(
+                              WeatherIcons.strong_wind,
+                              size: 8.5.h,
+                              color: Colors.black,
+                            ),
+                            Text(
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 15.sp,
+                              ),
+                              "$mWindSpeed/mph",
+                            ),
+                            Text(
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: Colors.black,
+                              ),
+                              "Windspeed",
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            WindIcon(
+                              color: Colors.black,
+                              degree: mWindDirection,
+                              size: 10.6.h,
+                            ),
+                            Text(
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: Colors.black,
+                              ),
+                              "Wind Direction",
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            BoxedIcon(
+                              WeatherIcons.humidity,
+                              color: Colors.black,
+                              size: 6.75.h,
+                            ),
+                            Text(
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 30.sp,
+                                ),
+                                mHumidity.toString()),
+                            Text(
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: Colors.black,
+                              ),
+                              "Humidity",
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-      //body: Text("$"),
     );
   }
 }
-
 // TODO : This page acquires geolocation of city. It then needs to geolocate and gather that citys info ready for display.
