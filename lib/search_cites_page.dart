@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http; // clarify function origin
 import 'dart:convert'; //json conversion
 import 'globals.dart';
 import 'search_result_page.dart';
+import 'package:sizer/sizer.dart';
 
 class SearchCitiesPage extends StatefulWidget {
   late String mSelectedCountry;
@@ -31,7 +32,7 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
     }
   }
 
-  void getCountries() async {
+  void getCities() async {
     countryCheck(); // check that the country is correct for json
     http.Response response = await http.get(
       Uri.parse(
@@ -55,21 +56,55 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
       debugPrint(response.statusCode.toString());
     }
 
-    setState(() {}); // this update the screen with the list of countries
+    setState(() {
+      SearchCitiesPage;
+    }); // this update the screen with the list of countries
   }
 
   @override
   void initState() {
     super.initState();
-    getCountries();
+    getCities();
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         backgroundColor: Colors.black,
-        title: Text("Cities in $mState"),
+        title: TextButton(
+          onPressed: () {
+            setState(() {
+              getCities();
+              debugPrint("State Page Refresh Button Pressed");
+            });
+          },
+          child: Row(
+            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  //maxLines: 1,
+                  //softWrap: false,
+                  "Cities in $mState",
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
       body: ListView.builder(
         itemCount: numCities,

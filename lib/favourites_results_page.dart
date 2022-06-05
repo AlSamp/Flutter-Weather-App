@@ -1,37 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; // clarify function origin
-import 'package:mobile_computing_assignment/favourites_page.dart';
 import 'dart:convert'; //json conversion
 import 'globals.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'display_weather_icons.dart';
 import 'package:sizer/sizer.dart';
-import 'package:favorite_button/favorite_button.dart';
 import 'status_error_page.dart';
 
-class SearchResultsPage extends StatefulWidget {
-  late String mSelectedCountry;
-  late String mSelectedState;
-  late String mSelectedCity;
+class FavouritesResultsPage extends StatefulWidget {
+  late String mFavourites;
 
-  SearchResultsPage(String country, String state, String city) {
-    mSelectedCountry = country;
-    mSelectedState = state;
-    mSelectedCity = city;
+  FavouritesResultsPage(String apiCall) {
+    mFavourites = apiCall;
   }
 
   @override
-  State<SearchResultsPage> createState() => _SearchResultsPageState();
+  State<FavouritesResultsPage> createState() => _FavouritesResultsPageState();
 }
 
-class _SearchResultsPageState extends State<SearchResultsPage> {
-  //_SearchStatesPageState(String selectedCountry) {
-  //  mSelectedCountry = selectedCountry;
-  //}
-
-  late String mCountry = widget.mSelectedCountry;
-  late String mState = widget.mSelectedState;
-  late String mCity = widget.mSelectedCity;
+class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
   late double mLongitude = 0;
   late double mLatitude = 0;
   late String mTargetLocation;
@@ -41,23 +28,18 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   double mWindSpeed = 0.0;
   int mWindDirection = 0;
   int mHumidity = 0;
-  bool favoured = false;
 
   void getTargetLocation() async {
     // check that the country is correct for json
     http.Response response = await http.get(
-      Uri.parse(
-          "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey"),
+      Uri.parse(widget.mFavourites),
     );
-    debugPrint(
-        "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey");
-    debugPrint("Search results page json result" + response.body);
 
     mTargetLocation = response.body;
 
     if (response.statusCode == 200) // 200 is http code for success
     {
-      mLocation = jsonDecode(mTargetLocation)["data"]["city"]; // user location
+      mLocation = jsonDecode(mTargetLocation)["data"]["city"]; // user
       mTemperature = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
               ["tp"]
           .toString();
@@ -74,87 +56,43 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         context,
         MaterialPageRoute(
           builder: (context) => StatusErrorPage(
-            "Search Reult",
+            "Favourite Results Page",
             response.statusCode.toString(),
           ),
         ),
       );
     }
 
-    setState(() {}); // this update the screen with the list of countries
+    // this update the screen with the list of countries
   }
 
   @override
   void initState() {
     super.initState();
-    debugPrint("Search results page Loaded");
-    favoured = checkFavoured(mCity);
-    setState(() {});
     getTargetLocation();
   }
 
-// TODO : Finish favourites
-  void removeFavourite(String target) {
-    for (int i = 0; i < favouritesList.length; i++) {
-      if (target == favouritesList[i]) {
-        favouritesList.removeAt(i);
-        favouritesApiCall.removeAt(i);
-        debugPrint("$mCity removed from favourites at index $i");
-      }
-    }
-  }
-
-  bool checkFavoured(String target) {
-    debugPrint("Check favoured called");
-    if (favouritesList.isNotEmpty) {
-      for (int i = 0; i < favouritesList.length; i++) {
-        if (target == favouritesList[i]) {
-          debugPrint("$target found in favourites");
-          debugPrint("Check favoured returned true");
-          return true;
-        } else {
-          debugPrint("$target not found in favourites");
-          debugPrint("Check favoured returned false");
-          return false;
-        }
-      }
-    }
-    debugPrint("Check favoured returned null s false it is");
-    return false;
-  }
-
-  void addFavourite() {
-    if (checkFavourites(mCity) == false) {
-      favouritesList.add(mCity);
-      favouritesApiCall.add(
-          "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey");
-      debugPrint("$mCity added to favourites");
-    } else if (checkFavourites(mCity) == true) {
-      removeFavourite(mCity);
-    }
-
-    setState(() {
-      FavouritesPage();
-    });
-  }
-
-//TODO : Sizer measurements
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: StarButton(
-            isStarred: favoured,
-            valueChanged: (_) {
-              addFavourite();
-              favoured = !favoured; // become opposite
-              debugPrint("Star button pressed isStarred == $favoured");
-            },
-          ),
           backgroundColor: Colors.black,
-          centerTitle: true,
-
-          //leading: Icon(Icons.star),
+          title: TextButton(
+              onPressed: () {
+                setState(() {
+                  getTargetLocation();
+                  debugPrint("Favourite results Page Refresh Button Pressed");
+                });
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                  ),
+                ],
+              )),
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -187,7 +125,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           color: Colors.black,
                           fontSize: 30,
                         ),
-                        mCity),
+                        mLocation),
                     SizedBox(
                       height: 1,
                       width: 50.h,
@@ -292,4 +230,3 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     );
   }
 }
-// TODO : This page acquires geolocation of city. It then needs to geolocate and gather that citys info ready for display.

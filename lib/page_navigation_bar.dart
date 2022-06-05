@@ -18,7 +18,7 @@ class _ScreenNavigationState extends State<ScreenNavigation> {
     const WeatherPage(),
     const SearchPage(),
     FavouritesPage(),
-    const SettingsPage(),
+    // const SettingsPage(),
   ];
 
   int navBarIndex = 0; // start with on weather page
@@ -37,8 +37,10 @@ class _ScreenNavigationState extends State<ScreenNavigation> {
             selectedItemColor: Colors.white,
             iconSize: 4.h,
             unselectedItemColor: Colors.grey,
-            onTap: (index) => setState(() => navBarIndex =
-                index), // when user clicks on navbar element record the selected index
+            onTap: (index) => setState(() {
+              navBarIndex = index;
+              debugPrint("Navbar index: $index pressed");
+            }), // when user clicks on navbar element record the selected index
             currentIndex:
                 navBarIndex, // update navbar with user selected option
             items: const [
@@ -57,11 +59,11 @@ class _ScreenNavigationState extends State<ScreenNavigation> {
                 label: "Favourites",
                 backgroundColor: Colors.black,
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                label: "Settings",
-                backgroundColor: Colors.black,
-              )
+              //BottomNavigationBarItem(
+              //  icon: Icon(Icons.settings),
+              //  label: "Settings",
+              //  backgroundColor: Colors.black,
+              //)
             ],
           )),
     );

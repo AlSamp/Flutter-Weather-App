@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'display_weather_icons.dart';
 import 'package:sizer/sizer.dart';
+import 'status_error_page.dart';
 
 class MainWeatherCard extends StatefulWidget {
   @override
@@ -34,6 +35,7 @@ class MainWeatherCard extends StatefulWidget {
 
 class _MainWeatherCardState extends State<MainWeatherCard> {
   @override
+  String mStatus = "";
   void setDeafultCardVariables() {
     if (widget.mLocation == "") {
       widget.mLocation = "Tap To Refresh";
@@ -87,7 +89,8 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
                   fontSize: 25,
                   color: Colors.black,
                 ),
-                (DisplayerWeatherIcon(widget.mIcon).displayStatus()).toString(),
+                (mStatus = DisplayerWeatherIcon(widget.mIcon).displayStatus())
+                    .toString(),
               ),
               Text(
                   style: TextStyle(

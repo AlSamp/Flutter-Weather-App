@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http; // clarify function origin
 import 'dart:convert'; //json conversion
 import 'globals.dart';
 import 'search_cites_page.dart';
+import 'package:sizer/sizer.dart';
 
 class SearchStatesPage extends StatefulWidget {
   late String mSelectedCountry;
@@ -28,7 +29,7 @@ class _SearchStatesPageState extends State<SearchStatesPage> {
     }
   }
 
-  void getCountries() async {
+  void getStates() async {
     countryCheck(); // check that the country is correct for json
     http.Response response = await http.get(
       Uri.parse(
@@ -62,15 +63,47 @@ class _SearchStatesPageState extends State<SearchStatesPage> {
   @override
   void initState() {
     super.initState();
-    getCountries();
+    getStates();
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         backgroundColor: Colors.black,
-        title: Text("States of $mCountry"),
+        title: TextButton(
+          onPressed: () {
+            setState(() {
+              getStates();
+              debugPrint("State Page Refresh Button Pressed");
+            });
+          },
+          child: Row(
+            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  //maxLines: 1,
+                  //softWrap: false,
+                  "States of $mCountry",
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
       body: ListView.builder(
         itemCount: numStates,

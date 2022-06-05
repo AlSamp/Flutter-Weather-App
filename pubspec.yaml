@@ -38,6 +38,7 @@ dependencies:
   http: ^0.13.4      # Used for url calls
   weather_icons: ^3.0.0 # Weather icons
   sizer: ^2.0.15  # Keep size the same across devices
+  favorite_button: ^0.0.4 # on search result page
 
 dev_dependencies:
   flutter_test:

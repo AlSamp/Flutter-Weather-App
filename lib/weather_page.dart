@@ -4,6 +4,7 @@ import 'package:mobile_computing_assignment/weather_card_main.dart';
 import 'geolocation.dart';
 import 'package:http/http.dart' as http; // clarify function origin
 import 'dart:convert'; //json conversion
+import 'status_error_page.dart';
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage({Key? key}) : super(key: key);
@@ -15,7 +16,6 @@ class WeatherPage extends StatefulWidget {
 class _WeatherPageState extends State<WeatherPage> {
   String latitude = "";
   String longitude = "";
-
   String location = "";
   String temperature = "";
   String icon = "";
@@ -58,6 +58,15 @@ class _WeatherPageState extends State<WeatherPage> {
       humidity = jsonDecode(locationInfo)["data"]["current"]["weather"]["hu"];
     } else {
       debugPrint(response.statusCode.toString());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => StatusErrorPage(
+            "Weather Page",
+            response.statusCode.toString(),
+          ),
+        ),
+      );
     }
   }
 
@@ -65,7 +74,7 @@ class _WeatherPageState extends State<WeatherPage> {
   void initState() {
     super.initState();
     getCurrentLocation();
-    getLocalWeather();
+    //getLocalWeather();
   }
 
   @override
@@ -91,7 +100,13 @@ class _WeatherPageState extends State<WeatherPage> {
             debugPrint("Weather card pressed");
           },
           child: MainWeatherCard(
-              location, temperature, icon, windSpeed, windDirection, humidity),
+            location,
+            temperature,
+            icon,
+            windSpeed,
+            windDirection,
+            humidity,
+          ),
         ),
       ),
     );
