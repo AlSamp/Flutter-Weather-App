@@ -33,6 +33,8 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   void getLocalWeather() async {
+    getCurrentLocation();
+
     http.Response response = await http.get(
       Uri.parse(
           "http://api.airvisual.com/v2/nearest_city?lat=$latitude&lon=$longitude&key=$kApiKey"),
@@ -52,7 +54,8 @@ class _WeatherPageState extends State<WeatherPage> {
       temperature = jsonDecode(locationInfo)["data"]["current"]["weather"]["tp"]
           .toString();
       icon = jsonDecode(locationInfo)["data"]["current"]["weather"]["ic"];
-      windSpeed = jsonDecode(locationInfo)["data"]["current"]["weather"]["ws"];
+      windSpeed = jsonDecode(locationInfo)["data"]["current"]["weather"]["ws"]
+          .toDouble();
       windDirection =
           jsonDecode(locationInfo)["data"]["current"]["weather"]["wd"];
       humidity = jsonDecode(locationInfo)["data"]["current"]["weather"]["hu"];
@@ -80,7 +83,7 @@ class _WeatherPageState extends State<WeatherPage> {
   @override
   Widget build(BuildContext context) {
     //  when page is first initialised,get user geolocation information
-    getLocalWeather();
+    //getLocalWeather();
     return Scaffold(
       backgroundColor: Colors.black,
       body: Container(
@@ -94,6 +97,9 @@ class _WeatherPageState extends State<WeatherPage> {
         child: TextButton(
           onPressed: () {
             setState(() {
+              //getCurrentLocation();
+              getLocalWeather();
+              MainWeatherCard;
               MainWeatherCard(location, temperature, icon, windSpeed,
                   windDirection, humidity);
             });

@@ -62,8 +62,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
               ["tp"]
           .toString();
       mIcon = jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ic"];
-      mWindSpeed =
-          jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ws"];
+      mWindSpeed = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
+              ["ws"]
+          .toDouble();
       mWindDirection =
           jsonDecode(mTargetLocation)["data"]["current"]["weather"]["wd"];
       mHumidity =
@@ -132,10 +133,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     } else if (checkFavourites(mCity) == true) {
       removeFavourite(mCity);
     }
-
-    setState(() {
-      FavouritesPage();
-    });
   }
 
 //TODO : Sizer measurements
@@ -143,13 +140,32 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: StarButton(
-            isStarred: favoured,
-            valueChanged: (_) {
-              addFavourite();
-              favoured = !favoured; // become opposite
-              debugPrint("Star button pressed isStarred == $favoured");
-            },
+          title: Row(
+            //mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: StarButton(
+                  isStarred: favoured,
+                  valueChanged: (_) {
+                    addFavourite();
+                    favoured = !favoured; // become opposite
+                    debugPrint("Star button pressed isStarred == $favoured");
+                  },
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    getTargetLocation();
+                  });
+                  debugPrint("Search result page refresh button pressed");
+                },
+                child: Icon(
+                  Icons.refresh,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
           backgroundColor: Colors.black,
           centerTitle: true,

@@ -4,6 +4,7 @@ import 'dart:convert'; //json conversion
 import 'globals.dart';
 import 'search_result_page.dart';
 import 'package:sizer/sizer.dart';
+import 'status_error_page.dart';
 
 class SearchCitiesPage extends StatefulWidget {
   late String mSelectedCountry;
@@ -54,6 +55,15 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
       }
     } else {
       debugPrint(response.statusCode.toString());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => StatusErrorPage(
+            "Search Citites Page",
+            response.statusCode.toString(),
+          ),
+        ),
+      );
     }
 
     setState(() {

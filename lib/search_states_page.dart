@@ -4,6 +4,7 @@ import 'dart:convert'; //json conversion
 import 'globals.dart';
 import 'search_cites_page.dart';
 import 'package:sizer/sizer.dart';
+import 'status_error_page.dart';
 
 class SearchStatesPage extends StatefulWidget {
   late String mSelectedCountry;
@@ -55,6 +56,15 @@ class _SearchStatesPageState extends State<SearchStatesPage> {
       }
     } else {
       debugPrint(response.statusCode.toString());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => StatusErrorPage(
+            "Search States Page",
+            response.statusCode.toString(),
+          ),
+        ),
+      );
     }
 
     setState(() {}); // this update the screen with the list of countries

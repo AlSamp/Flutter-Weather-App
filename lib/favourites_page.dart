@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http; // clarify function origin
 import 'favourites_results_page.dart';
-import 'dart:convert'; //json conversion
 import 'globals.dart';
-import 'package:favorite_button/favorite_button.dart';
 import 'package:sizer/sizer.dart';
+import 'status_error_page.dart';
 
 class FavouritesPage extends StatefulWidget {
   @override
@@ -66,8 +64,17 @@ class _FavouritesPageState extends State<FavouritesPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          FavouritesResultsPage(favouritesApiCall[index]),
+                      builder: (context) {
+                        try {
+                          return FavouritesResultsPage(
+                              favouritesApiCall[index], favouritesList[index]);
+                        } catch (error) {
+                          return StatusErrorPage(
+                            "Favourites Page Error",
+                            "Selected item has been removed, Refresh page",
+                          );
+                        }
+                      },
                     ),
                   );
                 },

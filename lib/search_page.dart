@@ -74,7 +74,6 @@ class _SearchPageState extends State<SearchPage> {
             });
           },
           child: Row(
-            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
                 child: Text(

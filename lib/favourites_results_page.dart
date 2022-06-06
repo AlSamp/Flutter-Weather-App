@@ -6,12 +6,15 @@ import 'package:weather_icons/weather_icons.dart';
 import 'display_weather_icons.dart';
 import 'package:sizer/sizer.dart';
 import 'status_error_page.dart';
+import 'package:favorite_button/favorite_button.dart';
 
 class FavouritesResultsPage extends StatefulWidget {
   late String mFavourites;
+  late String mCity;
 
-  FavouritesResultsPage(String apiCall) {
+  FavouritesResultsPage(String apiCall, String city) {
     mFavourites = apiCall;
+    mCity = city;
   }
 
   @override
@@ -22,12 +25,15 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
   late double mLongitude = 0;
   late double mLatitude = 0;
   late String mTargetLocation;
-  String mLocation = "";
+  late String mCity = widget.mCity;
+  String mCountry = "";
+  String mState = "";
   String mTemperature = "";
   String mIcon = "";
   double mWindSpeed = 0.0;
   int mWindDirection = 0;
   int mHumidity = 0;
+  bool favoured = true;
 
   void getTargetLocation() async {
     // check that the country is correct for json
@@ -39,13 +45,16 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
 
     if (response.statusCode == 200) // 200 is http code for success
     {
-      mLocation = jsonDecode(mTargetLocation)["data"]["city"]; // user
+      mCountry = jsonDecode(mTargetLocation)["data"]["country"];
+      mState = jsonDecode(mTargetLocation)["data"]["state"];
+      mCity = jsonDecode(mTargetLocation)["data"]["city"];
       mTemperature = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
               ["tp"]
           .toString();
       mIcon = jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ic"];
-      mWindSpeed =
-          jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ws"];
+      mWindSpeed = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
+              ["ws"]
+          .toDouble();
       mWindDirection =
           jsonDecode(mTargetLocation)["data"]["current"]["weather"]["wd"];
       mHumidity =
@@ -66,33 +75,93 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
     // this update the screen with the list of countries
   }
 
+  void removeFavourite(String target) {
+    for (int i = 0; i < favouritesList.length; i++) {
+      if (target == favouritesList[i]) {
+        favouritesList.removeAt(i);
+        favouritesApiCall.removeAt(i);
+        debugPrint("$mCity removed from favourites at index $i");
+      }
+    }
+  }
+
+  bool checkFavoured(String target) {
+    debugPrint("Check favoured called");
+    if (favouritesList.isNotEmpty) {
+      for (int i = 0; i < favouritesList.length; i++) {
+        if (target == favouritesList[i]) {
+          debugPrint("$target found in favourites");
+          debugPrint("Check favoured returned true");
+          return true;
+        } else {
+          debugPrint("$target not found in favourites");
+          debugPrint("Check favoured returned false");
+          return false;
+        }
+      }
+    }
+    debugPrint("Check favoured returned null s false it is");
+    return false;
+  }
+
+  void addFavourite() {
+    if (checkFavourites(mCity) == false) {
+      favouritesList.add(mCity);
+      favouritesApiCall.add(
+          "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey");
+      debugPrint("$mCity added to favourites");
+    } else if (checkFavourites(mCity) == true) {
+      removeFavourite(mCity);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    getTargetLocation();
+    setState(() {
+      //favoured;
+      getTargetLocation();
+    });
   }
 
   Widget build(BuildContext context) {
+    setState(() {
+      //getTargetLocation();
+    });
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          title: Row(
+            //mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: StarButton(
+                  isStarred: favoured,
+                  valueChanged: (_) {
+                    addFavourite();
+                    favoured = !favoured; // become opposite
+                    debugPrint("Star button pressed isStarred == $favoured");
+                  },
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    getTargetLocation();
+                  });
+                  debugPrint("Favourites result page refresh button pressed");
+                },
+                child: Icon(
+                  Icons.refresh,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
           backgroundColor: Colors.black,
-          title: TextButton(
-              onPressed: () {
-                setState(() {
-                  getTargetLocation();
-                  debugPrint("Favourite results Page Refresh Button Pressed");
-                });
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(
-                    Icons.refresh,
-                    color: Colors.white,
-                  ),
-                ],
-              )),
+          centerTitle: true,
+
+          //leading: Icon(Icons.star),
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -125,7 +194,7 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
                           color: Colors.black,
                           fontSize: 30,
                         ),
-                        mLocation),
+                        mCity),
                     SizedBox(
                       height: 1,
                       width: 50.h,
