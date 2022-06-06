@@ -34,41 +34,53 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
   }
 
   void getCities() async {
-    countryCheck(); // check that the country is correct for json
-    http.Response response = await http.get(
-      Uri.parse(
-          "http://api.airvisual.com/v2/cities?state=$mState&country=$mCountry&key=$kApiKey"),
-    );
+    try {
+      countryCheck(); // check that the country is correct for json
+      http.Response response = await http.get(
+        Uri.parse(
+            "http://api.airvisual.com/v2/cities?state=$mState&country=$mCountry&key=$kApiKey"),
+      );
 
-    if (response.statusCode == 200) // 200 is http code for success
-    {
-      final cities = response.body;
+      if (response.statusCode == 200) // 200 is http code for success
+      {
+        final cities = response.body;
 
-      for (int i = 0; i < 200; i++) {
-        try {
-          apiCities.add(jsonDecode(cities)["data"][i]["city"]);
-          numCities++;
-        } catch (error) {
-          // There will be a read access violation so break the for loop
-          break;
+        for (int i = 0; i < 200; i++) {
+          try {
+            apiCities.add(jsonDecode(cities)["data"][i]["city"]);
+            numCities++;
+          } catch (error) {
+            // There will be a read access violation so break the for loop
+            break;
+          }
         }
+      } else {
+        debugPrint(response.statusCode.toString());
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StatusErrorPage(
+              "Search Citites Page",
+              response.statusCode.toString(),
+            ),
+          ),
+        );
       }
-    } else {
-      debugPrint(response.statusCode.toString());
+
+      setState(() {
+        SearchCitiesPage;
+      }); // this update the screen with the list of countries
+    } catch (error) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => StatusErrorPage(
-            "Search Citites Page",
-            response.statusCode.toString(),
+            "Search States Page",
+            "404 : Internet connection not found",
           ),
         ),
       );
     }
-
-    setState(() {
-      SearchCitiesPage;
-    }); // this update the screen with the list of countries
   }
 
   @override

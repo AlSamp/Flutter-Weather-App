@@ -18,9 +18,6 @@ class SearchStatesPage extends StatefulWidget {
 }
 
 class _SearchStatesPageState extends State<SearchStatesPage> {
-  //_SearchStatesPageState(String selectedCountry) {
-  //  mSelectedCountry = selectedCountry;
-  //}
   List<String> apiStates = []; // empty list
   late int numStates = 0;
   late String mCountry = widget.mSelectedCountry;
@@ -31,43 +28,56 @@ class _SearchStatesPageState extends State<SearchStatesPage> {
   }
 
   void getStates() async {
-    countryCheck(); // check that the country is correct for json
-    http.Response response = await http.get(
-      Uri.parse(
-          "http://api.airvisual.com/v2/states?country=$mCountry&key=$kApiKey"),
-    );
+    try {
+      // if no internet then there will be an error
+      countryCheck(); // check that the country is correct for json
+      http.Response response = await http.get(
+        Uri.parse(
+            "http://api.airvisual.com/v2/states?country=$mCountry&key=$kApiKey"),
+      );
 
-    if (response.statusCode == 200) // 200 is http code for success
-    {
-      final states = response.body;
-      debugPrint(response.body);
-      var test = jsonDecode(states)["data"][0]["state"];
-      debugPrint("Json country test output  = $test");
+      if (response.statusCode == 200) // 200 is http code for success
+      {
+        final states = response.body;
+        debugPrint(response.body);
+        var test = jsonDecode(states)["data"][0]["state"];
+        debugPrint("Json country test output  = $test");
 
-      for (int i = 0; i < 200; i++) {
-        try {
-          print(jsonDecode(states)["data"][i]["country"]);
-          apiStates.add(jsonDecode(states)["data"][i]["state"]);
-          numStates++;
-        } catch (error) {
-          // There will be a read access violation so break the for loop
-          break;
+        for (int i = 0; i < 200; i++) {
+          try {
+            print(jsonDecode(states)["data"][i]["country"]);
+            apiStates.add(jsonDecode(states)["data"][i]["state"]);
+            numStates++;
+          } catch (error) {
+            // There will be a read access violation so break the for loop
+            break;
+          }
         }
+      } else {
+        debugPrint(response.statusCode.toString());
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StatusErrorPage(
+              "Search States Page",
+              response.statusCode.toString(),
+            ),
+          ),
+        );
       }
-    } else {
-      debugPrint(response.statusCode.toString());
+
+      setState(() {}); // this update the screen with the list of countries
+    } catch (error) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => StatusErrorPage(
             "Search States Page",
-            response.statusCode.toString(),
+            "404 : Internet connection not found",
           ),
         ),
       );
     }
-
-    setState(() {}); // this update the screen with the list of countries
   }
 
   @override

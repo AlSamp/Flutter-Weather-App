@@ -36,43 +36,55 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
   bool favoured = true;
 
   void getTargetLocation() async {
-    // check that the country is correct for json
-    http.Response response = await http.get(
-      Uri.parse(widget.mFavourites),
-    );
+    try {
+      // check that the country is correct for json
+      http.Response response = await http.get(
+        Uri.parse(widget.mFavourites),
+      );
 
-    mTargetLocation = response.body;
+      mTargetLocation = response.body;
 
-    if (response.statusCode == 200) // 200 is http code for success
-    {
-      mCountry = jsonDecode(mTargetLocation)["data"]["country"];
-      mState = jsonDecode(mTargetLocation)["data"]["state"];
-      mCity = jsonDecode(mTargetLocation)["data"]["city"];
-      mTemperature = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
-              ["tp"]
-          .toString();
-      mIcon = jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ic"];
-      mWindSpeed = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
-              ["ws"]
-          .toDouble();
-      mWindDirection =
-          jsonDecode(mTargetLocation)["data"]["current"]["weather"]["wd"];
-      mHumidity =
-          jsonDecode(mTargetLocation)["data"]["current"]["weather"]["hu"];
-    } else {
-      debugPrint(response.statusCode.toString());
+      if (response.statusCode == 200) // 200 is http code for success
+      {
+        mCountry = jsonDecode(mTargetLocation)["data"]["country"];
+        mState = jsonDecode(mTargetLocation)["data"]["state"];
+        mCity = jsonDecode(mTargetLocation)["data"]["city"];
+        mTemperature = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
+                ["tp"]
+            .toString();
+        mIcon = jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ic"];
+        mWindSpeed = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
+                ["ws"]
+            .toDouble();
+        mWindDirection =
+            jsonDecode(mTargetLocation)["data"]["current"]["weather"]["wd"];
+        mHumidity =
+            jsonDecode(mTargetLocation)["data"]["current"]["weather"]["hu"];
+      } else {
+        debugPrint(response.statusCode.toString());
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StatusErrorPage(
+              "Favourite Results Page",
+              response.statusCode.toString(),
+            ),
+          ),
+        );
+      }
+
+      // this update the screen with the list of countries
+    } catch (error) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => StatusErrorPage(
-            "Favourite Results Page",
-            response.statusCode.toString(),
+            "Search States Page",
+            "404 : Internet connection not found",
           ),
         ),
       );
     }
-
-    // this update the screen with the list of countries
   }
 
   void removeFavourite(String target) {

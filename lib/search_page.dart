@@ -20,41 +20,53 @@ class _SearchPageState extends State<SearchPage> {
   late int numCountries = 0;
 
   void getCountries() async {
-    http.Response response = await http.get(
-      Uri.parse("http://api.airvisual.com/v2/countries?key=$kApiKey"),
-    );
+    try {
+      http.Response response = await http.get(
+        Uri.parse("http://api.airvisual.com/v2/countries?key=$kApiKey"),
+      );
 
-    if (response.statusCode == 200) // 200 is http code for success
-    {
-      final country = response.body;
-      debugPrint(response.body);
-      var test = jsonDecode(country)["data"][0]["country"];
-      debugPrint("Json country test output  = $test");
+      if (response.statusCode == 200) // 200 is http code for success
+      {
+        final country = response.body;
+        debugPrint(response.body);
+        var test = jsonDecode(country)["data"][0]["country"];
+        debugPrint("Json country test output  = $test");
 
-      for (int i = 0; i < 200; i++) {
-        try {
-          print(jsonDecode(country)["data"][i]["country"]);
-          apiCountries.add(jsonDecode(country)["data"][i]["country"]);
-          numCountries++;
-        } catch (error) {
-          // There will be a read access violation so break the for loop
-          break;
+        for (int i = 0; i < 200; i++) {
+          try {
+            print(jsonDecode(country)["data"][i]["country"]);
+            apiCountries.add(jsonDecode(country)["data"][i]["country"]);
+            numCountries++;
+          } catch (error) {
+            // There will be a read access violation so break the for loop
+            break;
+          }
         }
+      } else {
+        debugPrint(response.statusCode.toString());
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StatusErrorPage(
+              "Search Page",
+              response.statusCode.toString(),
+            ),
+          ),
+        );
       }
-    } else {
-      debugPrint(response.statusCode.toString());
+
+      setState(() {}); // this update the screen with the list of countries
+    } catch (error) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => StatusErrorPage(
-            "Search Page",
-            response.statusCode.toString(),
+            "Search States Page",
+            "404 : Internet connection not found",
           ),
         ),
       );
     }
-
-    setState(() {}); // this update the screen with the list of countries
   }
 
   @override

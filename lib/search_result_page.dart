@@ -44,45 +44,58 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   bool favoured = false;
 
   void getTargetLocation() async {
-    // check that the country is correct for json
-    http.Response response = await http.get(
-      Uri.parse(
-          "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey"),
-    );
-    debugPrint(
-        "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey");
-    debugPrint("Search results page json result" + response.body);
+    try {
+      // check that the country is correct for json
+      http.Response response = await http.get(
+        Uri.parse(
+            "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey"),
+      );
+      debugPrint(
+          "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey");
+      debugPrint("Search results page json result" + response.body);
 
-    mTargetLocation = response.body;
+      mTargetLocation = response.body;
 
-    if (response.statusCode == 200) // 200 is http code for success
-    {
-      mLocation = jsonDecode(mTargetLocation)["data"]["city"]; // user location
-      mTemperature = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
-              ["tp"]
-          .toString();
-      mIcon = jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ic"];
-      mWindSpeed = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
-              ["ws"]
-          .toDouble();
-      mWindDirection =
-          jsonDecode(mTargetLocation)["data"]["current"]["weather"]["wd"];
-      mHumidity =
-          jsonDecode(mTargetLocation)["data"]["current"]["weather"]["hu"];
-    } else {
-      debugPrint(response.statusCode.toString());
+      if (response.statusCode == 200) // 200 is http code for success
+      {
+        mLocation =
+            jsonDecode(mTargetLocation)["data"]["city"]; // user location
+        mTemperature = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
+                ["tp"]
+            .toString();
+        mIcon = jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ic"];
+        mWindSpeed = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
+                ["ws"]
+            .toDouble();
+        mWindDirection =
+            jsonDecode(mTargetLocation)["data"]["current"]["weather"]["wd"];
+        mHumidity =
+            jsonDecode(mTargetLocation)["data"]["current"]["weather"]["hu"];
+      } else {
+        debugPrint(response.statusCode.toString());
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StatusErrorPage(
+              "Search Reult",
+              response.statusCode.toString(),
+            ),
+          ),
+        );
+      }
+
+      setState(() {}); // this update the screen with the list of countries
+    } catch (error) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => StatusErrorPage(
-            "Search Reult",
-            response.statusCode.toString(),
+            "Search States Page",
+            "404 : Internet connection not found",
           ),
         ),
       );
     }
-
-    setState(() {}); // this update the screen with the list of countries
   }
 
   @override

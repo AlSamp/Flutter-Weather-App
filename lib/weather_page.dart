@@ -33,40 +33,53 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   void getLocalWeather() async {
-    getCurrentLocation();
+    try {
+      getCurrentLocation();
 
-    http.Response response = await http.get(
-      Uri.parse(
-          "http://api.airvisual.com/v2/nearest_city?lat=$latitude&lon=$longitude&key=$kApiKey"),
-    );
+      http.Response response = await http.get(
+        Uri.parse(
+            "http://api.airvisual.com/v2/nearest_city?lat=$latitude&lon=$longitude&key=$kApiKey"),
+      );
 
-    if (response.statusCode == 200) // 200 is http code for success
-    {
-      String locationInfo = response.body;
-      debugPrint(response.body);
-      var test = jsonDecode(locationInfo)["data"]["city"];
-      print("Json test output  = $test");
-      var test2 =
-          jsonDecode(locationInfo)["data"]["current"]["pollution"]["ts"];
+      if (response.statusCode == 200) // 200 is http code for success
+      {
+        String locationInfo = response.body;
+        debugPrint(response.body);
+        var test = jsonDecode(locationInfo)["data"]["city"];
+        print("Json test output  = $test");
+        var test2 =
+            jsonDecode(locationInfo)["data"]["current"]["pollution"]["ts"];
 
-      // data.current.weather.tp - temperature
-      location = jsonDecode(locationInfo)["data"]["city"]; // user
-      temperature = jsonDecode(locationInfo)["data"]["current"]["weather"]["tp"]
-          .toString();
-      icon = jsonDecode(locationInfo)["data"]["current"]["weather"]["ic"];
-      windSpeed = jsonDecode(locationInfo)["data"]["current"]["weather"]["ws"]
-          .toDouble();
-      windDirection =
-          jsonDecode(locationInfo)["data"]["current"]["weather"]["wd"];
-      humidity = jsonDecode(locationInfo)["data"]["current"]["weather"]["hu"];
-    } else {
-      debugPrint(response.statusCode.toString());
+        // data.current.weather.tp - temperature
+        location = jsonDecode(locationInfo)["data"]["city"]; // user
+        temperature = jsonDecode(locationInfo)["data"]["current"]["weather"]
+                ["tp"]
+            .toString();
+        icon = jsonDecode(locationInfo)["data"]["current"]["weather"]["ic"];
+        windSpeed = jsonDecode(locationInfo)["data"]["current"]["weather"]["ws"]
+            .toDouble();
+        windDirection =
+            jsonDecode(locationInfo)["data"]["current"]["weather"]["wd"];
+        humidity = jsonDecode(locationInfo)["data"]["current"]["weather"]["hu"];
+      } else {
+        debugPrint(response.statusCode.toString());
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StatusErrorPage(
+              "Weather Page",
+              response.statusCode.toString(),
+            ),
+          ),
+        );
+      }
+    } catch (error) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => StatusErrorPage(
-            "Weather Page",
-            response.statusCode.toString(),
+            "Search States Page",
+            "404 : Internet connection not found",
           ),
         ),
       );
