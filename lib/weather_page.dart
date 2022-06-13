@@ -5,6 +5,8 @@ import 'geolocation.dart';
 import 'package:http/http.dart' as http; // clarify function origin
 import 'dart:convert'; //json conversion
 import 'status_error_page.dart';
+import 'package:sizer/sizer.dart';
+import 'globals.dart';
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage({Key? key}) : super(key: key);
@@ -97,17 +99,11 @@ class _WeatherPageState extends State<WeatherPage> {
   Widget build(BuildContext context) {
     //  when page is first initialised,get user geolocation information
     //getLocalWeather();
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Container(
-        // ignore: prefer_const_constructors
-        // ignore: prefer_const_constructors
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: const AssetImage("lib/images/background (5).jpg"),
-              fit: BoxFit.cover),
-        ),
-        child: TextButton(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: TextButton(
           onPressed: () {
             setState(() {
               //getCurrentLocation();
@@ -116,16 +112,52 @@ class _WeatherPageState extends State<WeatherPage> {
               MainWeatherCard(location, temperature, icon, windSpeed,
                   windDirection, humidity);
             });
-            debugPrint("Weather card pressed");
+            debugPrint("Weather Refresh button pressed");
           },
-          child: MainWeatherCard(
-            location,
-            temperature,
-            icon,
-            windSpeed,
-            windDirection,
-            humidity,
+          child: Row(
+            children: [
+              Expanded(
+                child: Center(
+                  child: Text(
+                    "Local Weather",
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.refresh,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                ],
+              ),
+            ],
           ),
+        ),
+      ),
+      body: Container(
+        // ignore: prefer_const_constructors
+        // ignore: prefer_const_constructors
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              // check for dark mode or light mode and change background accordinly
+              image: AssetImage(
+                isDarkMode ? gDarkBackgroundImage : gLightBackgroundImage,
+              ),
+              fit: BoxFit.cover),
+        ),
+        child: MainWeatherCard(
+          location,
+          temperature,
+          icon,
+          windSpeed,
+          windDirection,
+          humidity,
         ),
       ),
     );
@@ -133,3 +165,4 @@ class _WeatherPageState extends State<WeatherPage> {
 }
 
 // background images from https://wallpaperaccess.com/orange-phoneCenter(
+
