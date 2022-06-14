@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_computing_assignment/favourites_page.dart';
 import 'weather_page.dart';
-import 'search_page.dart';
+import 'search_countries_page.dart';
 import 'favourites_page.dart';
 import 'settings_page.dart';
 import 'package:sizer/sizer.dart';
+import 'globals.dart';
 
 class ScreenNavigation extends StatefulWidget {
   const ScreenNavigation({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _ScreenNavigationState extends State<ScreenNavigation> {
     const WeatherPage(),
     const SearchPage(),
     FavouritesPage(),
-    // const SettingsPage(),
+    const SettingsPage(),
   ];
 
   int navBarIndex = 0; // start with on weather page
@@ -34,7 +35,7 @@ class _ScreenNavigationState extends State<ScreenNavigation> {
           // Display screens in the body of the screen
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.shifting, // Animation for navbar
-            selectedItemColor: Colors.white,
+            selectedItemColor: Theme.of(context).iconTheme.color,
             iconSize: 4.h,
             unselectedItemColor: Colors.grey,
             onTap: (index) => setState(() {
@@ -43,27 +44,27 @@ class _ScreenNavigationState extends State<ScreenNavigation> {
             }), // when user clicks on navbar element record the selected index
             currentIndex:
                 navBarIndex, // update navbar with user selected option
-            items: const [
+            items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.my_location),
                 label: "Weather",
-                backgroundColor: Colors.black,
+                backgroundColor: Theme.of(context).colorScheme.surface,
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.search),
                 label: "Search",
-                backgroundColor: Colors.black,
+                backgroundColor: Theme.of(context).colorScheme.surface,
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.star),
                 label: "Favourites",
-                backgroundColor: Colors.black,
+                backgroundColor: Theme.of(context).colorScheme.surface,
               ),
-              //BottomNavigationBarItem(
-              //  icon: Icon(Icons.settings),
-              //  label: "Settings",
-              //  backgroundColor: Colors.black,
-              //)
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: "Settings",
+                backgroundColor: Theme.of(context).colorScheme.surface,
+              )
             ],
           )),
     );

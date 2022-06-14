@@ -38,7 +38,7 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
   String mStatus = "";
   void setDeafultCardVariables() {
     if (widget.mLocation == "") {
-      widget.mLocation = "Tap To Refresh";
+      widget.mLocation = "";
     }
   }
 
@@ -52,12 +52,7 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
           ),
           padding: EdgeInsets.all(1.5.h),
           decoration: BoxDecoration(
-            color: Color.fromARGB(
-              185,
-              158,
-              158,
-              158,
-            ),
+            color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(
               3.0.h,
             ),
@@ -66,7 +61,7 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
             children: [
               Text(
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                     fontSize: 30,
                   ),
                   "${widget.mLocation}"),
@@ -74,27 +69,27 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
                 height: 1,
                 width: 50.h,
                 child: Container(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
               ),
               BoxedIcon(
                 //Display Weather Icon
                 (DisplayerWeatherIcon(widget.mIcon).displayIcon()),
-                color: Colors.black,
-                size: 25.h,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                size: 23.h,
               ),
               Text(
                 // Display weather status
                 style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.black,
+                  fontSize: 20.sp,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
                 (mStatus = DisplayerWeatherIcon(widget.mIcon).displayStatus())
                     .toString(),
               ),
               Text(
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                     fontSize: 100,
                   ),
                   "${widget.mTemperature}°"),
@@ -105,20 +100,22 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
                     children: [
                       BoxedIcon(
                         WeatherIcons.strong_wind,
-                        size: 8.5.h,
-                        color: Colors.black,
+                        size: 6.5.h,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                       Text(
                         style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15.sp,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                          fontSize: 13.sp,
                         ),
                         "${widget.mWindSpeed}/mph",
                       ),
                       Text(
                         style: TextStyle(
-                          fontSize: 13.sp,
-                          color: Colors.black,
+                          fontSize: 11.sp,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
                         "Windspeed",
                       ),
@@ -127,14 +124,15 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
                   Column(
                     children: [
                       WindIcon(
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                         degree: widget.mWindDirection,
-                        size: 10.6.h,
+                        size: 8.6.h,
                       ),
                       Text(
                         style: TextStyle(
                           fontSize: 13.sp,
-                          color: Colors.black,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
                         "Wind Direction",
                       ),
@@ -144,19 +142,22 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
                     children: [
                       BoxedIcon(
                         WeatherIcons.humidity,
-                        color: Colors.black,
-                        size: 6.75.h,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        size: 4.75.h,
                       ),
                       Text(
                           style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 30.sp,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer,
+                            fontSize: 28.sp,
                           ),
                           "${widget.mHumidity}"),
                       Text(
                         style: TextStyle(
-                          fontSize: 13.sp,
-                          color: Colors.black,
+                          fontSize: 11.sp,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
                         "Humidity",
                       ),

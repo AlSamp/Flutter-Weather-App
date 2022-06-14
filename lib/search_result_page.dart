@@ -42,59 +42,62 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   int mWindDirection = 0;
   int mHumidity = 0;
   bool favoured = false;
-
+  bool gotList = false;
   void getTargetLocation() async {
-    try {
-      // check that the country is correct for json
-      http.Response response = await http.get(
-        Uri.parse(
-            "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey"),
-      );
-      debugPrint(
-          "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey");
-      debugPrint("Search results page json result" + response.body);
+    if (gotList == false) {
+      try {
+        // check that the country is correct for json
+        http.Response response = await http.get(
+          Uri.parse(
+              "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey"),
+        );
+        debugPrint(
+            "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey");
+        debugPrint("Search results page json result" + response.body);
 
-      mTargetLocation = response.body;
+        mTargetLocation = response.body;
 
-      if (response.statusCode == 200) // 200 is http code for success
-      {
-        mLocation =
-            jsonDecode(mTargetLocation)["data"]["city"]; // user location
-        mTemperature = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
-                ["tp"]
-            .toString();
-        mIcon = jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ic"];
-        mWindSpeed = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
-                ["ws"]
-            .toDouble();
-        mWindDirection =
-            jsonDecode(mTargetLocation)["data"]["current"]["weather"]["wd"];
-        mHumidity =
-            jsonDecode(mTargetLocation)["data"]["current"]["weather"]["hu"];
-      } else {
-        debugPrint(response.statusCode.toString());
+        if (response.statusCode == 200) // 200 is http code for success
+        {
+          mLocation =
+              jsonDecode(mTargetLocation)["data"]["city"]; // user location
+          mTemperature = jsonDecode(mTargetLocation)["data"]["current"]
+                  ["weather"]["tp"]
+              .toString();
+          mIcon =
+              jsonDecode(mTargetLocation)["data"]["current"]["weather"]["ic"];
+          mWindSpeed = jsonDecode(mTargetLocation)["data"]["current"]["weather"]
+                  ["ws"]
+              .toDouble();
+          mWindDirection =
+              jsonDecode(mTargetLocation)["data"]["current"]["weather"]["wd"];
+          mHumidity =
+              jsonDecode(mTargetLocation)["data"]["current"]["weather"]["hu"];
+        } else {
+          debugPrint(response.statusCode.toString());
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StatusErrorPage(
+                "Search Reult",
+                response.statusCode.toString(),
+              ),
+            ),
+          );
+        }
+        gotList = true;
+        setState(() {}); // this update the screen with the list of countries
+      } catch (error) {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => StatusErrorPage(
-              "Search Reult",
-              response.statusCode.toString(),
+              "Search States Page",
+              "404 : Internet connection not found",
             ),
           ),
         );
       }
-
-      setState(() {}); // this update the screen with the list of countries
-    } catch (error) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => StatusErrorPage(
-            "Search States Page",
-            "404 : Internet connection not found",
-          ),
-        ),
-      );
     }
   }
 
@@ -138,6 +141,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   }
 
   void addFavourite() {
+    debugPrint(mCity);
     if (checkFavourites(mCity) == false) {
       favouritesList.add(mCity);
       favouritesApiCall.add(
@@ -150,9 +154,13 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
 
 //TODO : Sizer measurements
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          iconTheme: Theme.of(context).iconTheme,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          centerTitle: true,
           title: Row(
             //mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -175,20 +183,20 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                 },
                 child: Icon(
                   Icons.refresh,
-                  color: Colors.white,
+                  color: Theme.of(context).iconTheme.color,
                 ),
               ),
             ],
           ),
-          backgroundColor: Colors.black,
-          centerTitle: true,
 
           //leading: Icon(Icons.star),
         ),
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: const AssetImage("lib/images/background (5).jpg"),
+                image: AssetImage(
+                  isDarkMode ? gDarkBackgroundImage : gLightBackgroundImage,
+                ),
                 fit: BoxFit.cover),
           ),
           child: Column(
@@ -199,12 +207,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                 ),
                 padding: EdgeInsets.all(1.5.h),
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(
-                    185,
-                    158,
-                    158,
-                    158,
-                  ),
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(
                     3.0.h,
                   ),
@@ -213,7 +216,8 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   children: [
                     Text(
                         style: TextStyle(
-                          color: Colors.black,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                           fontSize: 30,
                         ),
                         mCity),
@@ -221,27 +225,28 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                       height: 1,
                       width: 50.h,
                       child: Container(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                     ),
                     BoxedIcon(
                       //Display Weather Icon
 
                       (DisplayerWeatherIcon(mIcon).displayIcon()),
-                      color: Colors.black,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                       size: 25.h,
                     ),
                     Text(
                       // Display weather status
                       style: TextStyle(
                         fontSize: 25,
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                       (DisplayerWeatherIcon(mIcon).displayStatus()).toString(),
                     ),
                     Text(
                         style: TextStyle(
-                          color: Colors.black,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                           fontSize: 100,
                         ),
                         "$mTemperature°"),
@@ -253,11 +258,15 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                             BoxedIcon(
                               WeatherIcons.strong_wind,
                               size: 8.5.h,
-                              color: Colors.black,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer,
                             ),
                             Text(
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer,
                                 fontSize: 15.sp,
                               ),
                               "$mWindSpeed/mph",
@@ -265,7 +274,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                             Text(
                               style: TextStyle(
                                 fontSize: 13.sp,
-                                color: Colors.black,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer,
                               ),
                               "Windspeed",
                             ),
@@ -274,14 +285,18 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         Column(
                           children: [
                             WindIcon(
-                              color: Colors.black,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer,
                               degree: mWindDirection,
                               size: 10.6.h,
                             ),
                             Text(
                               style: TextStyle(
                                 fontSize: 13.sp,
-                                color: Colors.black,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer,
                               ),
                               "Wind Direction",
                             ),
@@ -291,19 +306,25 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           children: [
                             BoxedIcon(
                               WeatherIcons.humidity,
-                              color: Colors.black,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer,
                               size: 6.75.h,
                             ),
                             Text(
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer,
                                   fontSize: 30.sp,
                                 ),
                                 mHumidity.toString()),
                             Text(
                               style: TextStyle(
                                 fontSize: 13.sp,
-                                color: Colors.black,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer,
                               ),
                               "Humidity",
                             ),

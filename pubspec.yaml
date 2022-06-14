@@ -39,6 +39,11 @@ dependencies:
   weather_icons: ^3.0.0 # Weather icons
   sizer: ^2.0.15  # Keep size the same across devices
   favorite_button: ^0.0.4 # on search result page
+  settings_ui: ^2.0.2 # setting page
+  provider: ^6.0.3 # for system light/dark mode
+  shared_preferences: ^2.0.15 # remember user preferences
+  share_plus: ^4.0.8 # sharing data
+
 
 dev_dependencies:
   flutter_test:

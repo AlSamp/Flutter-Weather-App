@@ -7,6 +7,7 @@ import 'dart:convert'; //json conversion
 import 'status_error_page.dart';
 import 'package:sizer/sizer.dart';
 import 'globals.dart';
+import 'package:share_plus/share_plus.dart';
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage({Key? key}) : super(key: key);
@@ -81,7 +82,7 @@ class _WeatherPageState extends State<WeatherPage> {
         MaterialPageRoute(
           builder: (context) => StatusErrorPage(
             "Search States Page",
-            "404 : Internet connection not found",
+            "404",
           ),
         ),
       );
@@ -116,6 +117,20 @@ class _WeatherPageState extends State<WeatherPage> {
           },
           child: Row(
             children: [
+              TextButton(
+                onPressed: () {
+                  if (location != "") {
+                    Share.share(
+                        "Today in $location the temperature is $temperature°",
+                        subject: "Local Weather");
+                  }
+                  debugPrint("Share button pressed");
+                },
+                child: Icon(
+                  Icons.share,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+              ),
               Expanded(
                 child: Center(
                   child: Text(

@@ -27,6 +27,7 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
   late int numCities = 0;
   late String mCountry = widget.mSelectedCountry;
   late String mState = widget.mSelectedState;
+  bool gotList = false;
   void countryCheck() {
     if (mCountry == "United Kingdom") {
       mCountry = "UK";
@@ -34,52 +35,56 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
   }
 
   void getCities() async {
-    try {
-      countryCheck(); // check that the country is correct for json
-      http.Response response = await http.get(
-        Uri.parse(
-            "http://api.airvisual.com/v2/cities?state=$mState&country=$mCountry&key=$kApiKey"),
-      );
+    if (gotList == false) {
+      try {
+        countryCheck(); // check that the country is correct for json
+        http.Response response = await http.get(
+          Uri.parse(
+              "http://api.airvisual.com/v2/cities?state=$mState&country=$mCountry&key=$kApiKey"),
+        );
 
-      if (response.statusCode == 200) // 200 is http code for success
-      {
-        final cities = response.body;
+        if (response.statusCode == 200) // 200 is http code for success
+        {
+          final cities = response.body;
 
-        for (int i = 0; i < 200; i++) {
-          try {
-            apiCities.add(jsonDecode(cities)["data"][i]["city"]);
-            numCities++;
-          } catch (error) {
-            // There will be a read access violation so break the for loop
-            break;
+          for (int i = 0; i < 200; i++) {
+            try {
+              apiCities.add(jsonDecode(cities)["data"][i]["city"]);
+              numCities++;
+            } catch (error) {
+              // There will be a read access violation so break the for loop
+              break;
+            }
           }
+        } else {
+          debugPrint(response.statusCode.toString());
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StatusErrorPage(
+                "Search Citites Page",
+                response.statusCode.toString(),
+              ),
+            ),
+          );
         }
-      } else {
-        debugPrint(response.statusCode.toString());
+
+        setState(() {
+          SearchCitiesPage;
+        }); // this update the screen with the list of countries
+      } catch (error) {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => StatusErrorPage(
-              "Search Citites Page",
-              response.statusCode.toString(),
+              "Search Cities Page",
+              "404",
             ),
           ),
         );
       }
 
-      setState(() {
-        SearchCitiesPage;
-      }); // this update the screen with the list of countries
-    } catch (error) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => StatusErrorPage(
-            "Search States Page",
-            "404 : Internet connection not found",
-          ),
-        ),
-      );
+      gotList = true;
     }
   }
 
@@ -92,7 +97,8 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        iconTheme: Theme.of(context).iconTheme,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: TextButton(
           onPressed: () {
             setState(() {
@@ -111,7 +117,7 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
                   "Cities in $mState",
                   style: TextStyle(
                     fontSize: 18.sp,
-                    color: Colors.white,
+                    color: Theme.of(context).iconTheme.color,
                   ),
                 ),
               ),
@@ -120,7 +126,7 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
                 children: [
                   Icon(
                     Icons.refresh,
-                    color: Colors.white,
+                    color: Theme.of(context).iconTheme.color,
                   ),
                 ],
               ),

@@ -18,54 +18,60 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   List<String> apiCountries = []; // empty list
   late int numCountries = 0;
+  bool gotList = false;
 
   void getCountries() async {
-    try {
-      http.Response response = await http.get(
-        Uri.parse("http://api.airvisual.com/v2/countries?key=$kApiKey"),
-      );
+    debugPrint("getCountries called");
+    debugPrint(gotList.toString());
 
-      if (response.statusCode == 200) // 200 is http code for success
-      {
-        final country = response.body;
-        debugPrint(response.body);
-        var test = jsonDecode(country)["data"][0]["country"];
-        debugPrint("Json country test output  = $test");
+    if (gotList == false) {
+      try {
+        http.Response response = await http.get(
+          Uri.parse("http://api.airvisual.com/v2/countries?key=$kApiKey"),
+        );
 
-        for (int i = 0; i < 200; i++) {
-          try {
-            print(jsonDecode(country)["data"][i]["country"]);
-            apiCountries.add(jsonDecode(country)["data"][i]["country"]);
-            numCountries++;
-          } catch (error) {
-            // There will be a read access violation so break the for loop
-            break;
+        if (response.statusCode == 200) // 200 is http code for success
+        {
+          final country = response.body;
+          debugPrint(response.body);
+          var test = jsonDecode(country)["data"][0]["country"];
+          debugPrint("Json country test output  = $test");
+
+          for (int i = 0; i < 200; i++) {
+            try {
+              print(jsonDecode(country)["data"][i]["country"]);
+              apiCountries.add(jsonDecode(country)["data"][i]["country"]);
+              numCountries++;
+            } catch (error) {
+              // There will be a read access violation so break the for loop
+              break;
+            }
           }
+        } else {
+          debugPrint(response.statusCode.toString());
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StatusErrorPage(
+                "Search Page",
+                response.statusCode.toString(),
+              ),
+            ),
+          );
         }
-      } else {
-        debugPrint(response.statusCode.toString());
+        gotList = true;
+        setState(() {}); // this update the screen with the list of countries
+      } catch (error) {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => StatusErrorPage(
-              "Search Page",
-              response.statusCode.toString(),
+              "Search Countries Page",
+              "404",
             ),
           ),
         );
       }
-
-      setState(() {}); // this update the screen with the list of countries
-    } catch (error) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => StatusErrorPage(
-            "Search States Page",
-            "404 : Internet connection not found",
-          ),
-        ),
-      );
     }
   }
 
@@ -78,11 +84,13 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: TextButton(
           onPressed: () {
             setState(() {
               getCountries();
+              SearchPage;
+              debugPrint("Country refresh button pressed");
             });
           },
           child: Row(
@@ -92,7 +100,7 @@ class _SearchPageState extends State<SearchPage> {
                   "Country Selection",
                   style: TextStyle(
                     fontSize: 18.sp,
-                    color: Colors.white,
+                    color: Theme.of(context).iconTheme.color,
                   ),
                 ),
               ),
@@ -101,7 +109,7 @@ class _SearchPageState extends State<SearchPage> {
                 children: [
                   Icon(
                     Icons.refresh,
-                    color: Colors.white,
+                    color: Theme.of(context).iconTheme.color,
                   ),
                 ],
               ),
@@ -131,6 +139,7 @@ class _SearchPageState extends State<SearchPage> {
                   );
                 },
                 child: ListTile(
+                  textColor: Theme.of(context).colorScheme.onPrimary,
                   title: Text(apiCountries[index]),
                   trailing: Text("..."),
                 ),

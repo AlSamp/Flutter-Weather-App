@@ -22,10 +22,14 @@ class _FavouritesPageState extends State<FavouritesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: TextButton(
             onPressed: () {
-              setState(() {});
+              setState(() {
+                //FavouritesPage;
+                debugPrint("Favourites page button pressed");
+                //debugPrint(favouritesList[0]);
+              });
             },
             child: Row(
               //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -70,8 +74,8 @@ class _FavouritesPageState extends State<FavouritesPage> {
                               favouritesApiCall[index], favouritesList[index]);
                         } catch (error) {
                           return StatusErrorPage(
-                            "Favourites Page Error",
-                            "Selected item has been removed, Refresh page",
+                            "Favourites Page",
+                            "Invalid Option",
                           );
                         }
                       },
