@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; // clarify function origin
-import 'package:mobile_computing_assignment/favourites_page.dart';
+
 import 'dart:convert'; //json conversion
 import 'globals.dart';
 import 'package:weather_icons/weather_icons.dart';

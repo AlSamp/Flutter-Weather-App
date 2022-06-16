@@ -104,56 +104,59 @@ class _WeatherPageState extends State<WeatherPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        title: TextButton(
-          onPressed: () {
-            setState(() {
-              //getCurrentLocation();
-              getLocalWeather();
-              MainWeatherCard;
-              MainWeatherCard(location, temperature, icon, windSpeed,
-                  windDirection, humidity);
-            });
-            debugPrint("Weather Refresh button pressed");
-          },
-          child: Row(
-            children: [
-              TextButton(
-                onPressed: () {
-                  if (location != "") {
-                    Share.share(
-                        "Today in $location the temperature is $temperature°",
-                        subject: "Local Weather");
-                  }
-                  debugPrint("Share button pressed");
-                },
-                child: Icon(
-                  Icons.share,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            TextButton(
+              onPressed: () {
+                if (location != "") {
+                  Share.share(
+                      "Today in $location the temperature is $temperature°",
+                      subject: "Local Weather");
+                }
+                debugPrint("Share button pressed");
+              },
+              child: Icon(
+                Icons.share,
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
+            Spacer(),
+            Center(
+              child: Text(
+                "Local Weather",
+                style: TextStyle(
+                  fontSize: 18.sp,
                   color: Theme.of(context).iconTheme.color,
                 ),
               ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    "Local Weather",
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  child: Icon(
                     Icons.refresh,
                     color: Theme.of(context).iconTheme.color,
                   ),
-                ],
-              ),
-            ],
-          ),
+                  onPressed: () {
+                    setState(() {
+                      //getCurrentLocation();
+                      getLocalWeather();
+                      MainWeatherCard;
+                      MainWeatherCard(location, temperature, icon, windSpeed,
+                          windDirection, humidity);
+                    });
+                    debugPrint("Weather Refresh button pressed");
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
+
+        ///
       ),
       body: Container(
         // ignore: prefer_const_constructors

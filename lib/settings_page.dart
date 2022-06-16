@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'globals.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -8,20 +9,39 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-String dropdownValue = 'One';
+List<String> options = ["Toggle Dark/Light Mode"];
 
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-      centerTitle: true,
-      title: Text("Settings"),
-      actions: [
-        ChangeThemeButtonWidget(),
-        //ChangeBackGroundWidget(), //TODO : Make sure this works, will need ChangeNotifierProvider
-      ],
-    ));
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        centerTitle: true,
+        title: Text(
+            style: TextStyle(
+              color: Theme.of(context).iconTheme.color,
+            ),
+            "Settings"),
+        actions: [
+          //ChangeThemeButtonWidget(),
+          //ChangeBackGroundWidget(), //TODO : Make sure this works, will need ChangeNotifierProvider
+        ],
+      ),
+      body: Card(
+        child: Row(
+          children: [
+            Text(
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: 18.sp),
+                "  Toggle Light/Dark Mode"),
+            Spacer(),
+            ChangeThemeButtonWidget(),
+          ],
+        ),
+      ),
+    );
   }
 }
 
