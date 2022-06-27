@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'favourites_results_page.dart';
 import 'globals.dart';
@@ -52,42 +53,82 @@ class _FavouritesPageState extends State<FavouritesPage> {
               ],
             )),
       ),
-      body: ListView.builder(
-        itemCount: favouritesApiCall.length, // length of list
-        itemBuilder: (BuildContext, index) {
-          return TextButton(
-            onPressed: () {},
-            style: TextButton.styleFrom(
-              minimumSize: Size.zero,
-              padding: EdgeInsets.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            child: Card(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        try {
-                          return FavouritesResultsPage(
-                              favouritesApiCall[index], favouritesList[index]);
-                        } catch (error) {
-                          return StatusErrorPage(
-                            "Favourites Page",
-                            "Invalid Option",
-                          );
-                        }
+      body: StreamBuilder<QuerySnapshot>(
+        stream: fireStore.collection("favourites").snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final documents = snapshot.data;
+            List docWidgets = [];
+            for (var doc in documents!.docs) {
+              final docWidget = doc;
+              docWidgets.add(docWidget);
+              //debugPrint(messageWidget.data);
+            }
+            return ListView.builder(
+              itemCount: docWidgets.length, // length of list
+              itemBuilder: (BuildContext, index) {
+                return TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    minimumSize: Size.zero,
+                    padding: EdgeInsets.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Card(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              try {
+                                return FavouritesResultsPage(
+                                    docWidgets[index]
+                                        .get("apiCall")
+                                        .toString()
+                                        .replaceAll('(', '')
+                                        .replaceAll(')', ''),
+                                    docWidgets[index]
+                                        .get("location")
+                                        .toString()
+                                        .replaceAll('(', '')
+                                        .replaceAll(')', ''),
+                                    docWidgets[index].id);
+                              } catch (error) {
+                                debugPrint(docWidgets[index]
+                                    .keys
+                                    .toString()
+                                    .replaceAll('(', '')
+                                    .replaceAll(')', ''));
+                                return StatusErrorPage(
+                                  "Favourites Page",
+                                  "Invalid Option",
+                                );
+                              }
+                            },
+                          ),
+                        );
                       },
+                      child: ListTile(
+                        title: Text(
+                          docWidgets[index]
+                              .get("location")
+                              .toString()
+                              .replaceAll('(', '')
+                              .replaceAll(')', ''),
+                        ),
+                      ),
                     ),
-                  );
-                },
-                child: ListTile(
-                  title: Text(favouritesList[index]),
-                ),
-              ),
-            ),
-          );
+                  ),
+                );
+              },
+            );
+          } else {
+            return StatusErrorPage(
+              "Favourites Page",
+              "Loading Error",
+            );
+          }
         },
       ),
     );
