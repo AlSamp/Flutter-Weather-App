@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'display_weather_icons.dart';
 import 'package:sizer/sizer.dart';
-import 'status_error_page.dart';
 
 class MainWeatherCard extends StatefulWidget {
   @override
@@ -62,7 +61,7 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
               Text(
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    fontSize: 30,
+                    fontSize: 28.sp,
                   ),
                   "${widget.mLocation}"),
               SizedBox(
@@ -90,12 +89,13 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
               Text(
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    fontSize: 100,
+                    fontSize: 80.sp,
                   ),
                   "${widget.mTemperature}°"),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  // Display wind
                   Column(
                     children: [
                       BoxedIcon(
@@ -139,6 +139,7 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
                     ],
                   ),
                   Column(
+                    //Display humidity
                     children: [
                       BoxedIcon(
                         WeatherIcons.humidity,
