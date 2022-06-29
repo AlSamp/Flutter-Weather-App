@@ -47,6 +47,7 @@ class _SearchPageState extends State<SearchPage> {
               break;
             }
           }
+          gotList = true;
         } else {
           debugPrint(response.statusCode.toString());
           Navigator.push(
@@ -59,7 +60,6 @@ class _SearchPageState extends State<SearchPage> {
             ),
           );
         }
-        gotList = true;
         setState(() {}); // this update the screen with the list of countries
       } catch (error) {
         Navigator.push(
