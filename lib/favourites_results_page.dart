@@ -9,12 +9,14 @@ import 'status_error_page.dart';
 import 'package:favorite_button/favorite_button.dart';
 
 class FavouritesResultsPage extends StatefulWidget {
-  late String mFavourites;
-  late String mCity;
+  late String _favourites;
+  late String _city;
+  late String _id;
 
-  FavouritesResultsPage(String apiCall, String city) {
-    mFavourites = apiCall;
-    mCity = city;
+  FavouritesResultsPage(String apiCall, String city, String id) {
+    _favourites = apiCall;
+    _city = city;
+    _id = id;
   }
 
   @override
@@ -25,7 +27,8 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
   late double mLongitude = 0;
   late double mLatitude = 0;
   late String mTargetLocation;
-  late String mCity = widget.mCity;
+  late String mCity = widget._city;
+  late String mId = widget._id;
   String mCountry = "";
   String mState = "";
   String mTemperature = "";
@@ -39,7 +42,7 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
     try {
       // check that the country is correct for json
       http.Response response = await http.get(
-        Uri.parse(widget.mFavourites),
+        Uri.parse(widget._favourites),
       );
 
       mTargetLocation = response.body;
@@ -80,7 +83,7 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
         MaterialPageRoute(
           builder: (context) => StatusErrorPage(
             "Search States Page",
-            "404 : Internet connection not found",
+            "404",
           ),
         ),
       );
@@ -88,16 +91,12 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
   }
 
   void removeFavourite(String target) {
-    for (int i = 0; i < favouritesList.length; i++) {
-      if (target == favouritesList[i]) {
-        favouritesList.removeAt(i);
-        favouritesApiCall.removeAt(i);
-        debugPrint("$mCity removed from favourites at index $i");
-      }
-    }
+    debugPrint("Remove favourites called");
+    fireStore.collection('favourites').doc(mId).delete();
   }
 
   bool checkFavoured(String target) {
+    // if found in list make sure star icon is coloured
     debugPrint("Check favoured called");
     if (favouritesList.isNotEmpty) {
       for (int i = 0; i < favouritesList.length; i++) {
@@ -117,13 +116,18 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
   }
 
   void addFavourite() {
-    if (checkFavourites(mCity) == false) {
-      favouritesList.add(mCity);
-      favouritesApiCall.add(
-          "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey");
+    // add data to firebase
+    if (favoured == false) {
+      fireStore.collection("favourites").add({
+        "location": mCity,
+        "apiCall":
+            "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey"
+      });
+
       debugPrint("$mCity added to favourites");
-    } else if (checkFavourites(mCity) == true) {
-      removeFavourite(mCity);
+    } else if (favoured == true) {
+      //remove data from firebase
+      removeFavourite(mId);
     }
   }
 
@@ -131,9 +135,10 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
   void initState() {
     super.initState();
     setState(() {
-      //favoured;
+      checkFavoured(mCity);
       getTargetLocation();
     });
+    debugPrint(mId);
   }
 
   Widget build(BuildContext context) {
@@ -179,6 +184,7 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
           decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(
+                  /// Display appropriate background image
                   isDarkMode ? gDarkBackgroundImage : gLightBackgroundImage,
                 ),
                 fit: BoxFit.cover),
@@ -228,6 +234,7 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
                       (DisplayerWeatherIcon(mIcon).displayStatus()).toString(),
                     ),
                     Text(
+                        // Display Temperatire
                         style: TextStyle(
                           color:
                               Theme.of(context).colorScheme.onPrimaryContainer,
@@ -240,6 +247,7 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
                         Column(
                           children: [
                             BoxedIcon(
+                              // Display windspeed icon
                               WeatherIcons.strong_wind,
                               size: 8.5.h,
                               color: Theme.of(context)
@@ -247,6 +255,7 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
                                   .onPrimaryContainer,
                             ),
                             Text(
+                              // Display windspeed
                               style: TextStyle(
                                 color: Theme.of(context)
                                     .colorScheme
@@ -267,6 +276,7 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
                           ],
                         ),
                         Column(
+                          // Display windspeed direction
                           children: [
                             WindIcon(
                               color: Theme.of(context)
@@ -287,6 +297,7 @@ class _FavouritesResultsPageState extends State<FavouritesResultsPage> {
                           ],
                         ),
                         Column(
+                          // Display humidity
                           children: [
                             BoxedIcon(
                               WeatherIcons.humidity,

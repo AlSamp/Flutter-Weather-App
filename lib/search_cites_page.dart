@@ -20,9 +20,6 @@ class SearchCitiesPage extends StatefulWidget {
 }
 
 class _SearchCitiesPageState extends State<SearchCitiesPage> {
-  //_SearchStatesPageState(String selectedCountry) {
-  //  mSelectedCountry = selectedCountry;
-  //}
   List<String> apiCities = []; // empty list
   late int numCities = 0;
   late String mCountry = widget.mSelectedCountry;
@@ -71,7 +68,7 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
 
         setState(() {
           SearchCitiesPage;
-        }); // this update the screen with the list of countries
+        }); // this  will update the screen with the list of countries
       } catch (error) {
         Navigator.push(
           context,
@@ -134,6 +131,7 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
           ),
         ),
       ),
+      // Display list on citys as interactable cards
       body: ListView.builder(
         itemCount: numCities,
         itemBuilder: (BuildContext, index) {
@@ -147,6 +145,7 @@ class _SearchCitiesPageState extends State<SearchCitiesPage> {
             child: Card(
               child: GestureDetector(
                 onTap: () {
+                  // open results page with the users choice
                   Navigator.push(
                     context,
                     MaterialPageRoute(

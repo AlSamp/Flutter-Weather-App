@@ -121,7 +121,7 @@ class _WeatherPageState extends State<WeatherPage> {
                 color: Theme.of(context).iconTheme.color,
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Center(
               child: Text(
                 "Local Weather",
@@ -131,7 +131,7 @@ class _WeatherPageState extends State<WeatherPage> {
                 ),
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

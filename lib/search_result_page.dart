@@ -110,17 +110,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     getTargetLocation();
   }
 
-// TODO : Finish favourites
-  void removeFavourite(String target) {
-    for (int i = 0; i < favouritesList.length; i++) {
-      if (target == favouritesList[i]) {
-        favouritesList.removeAt(i);
-        favouritesApiCall.removeAt(i);
-        debugPrint("$mCity removed from favourites at index $i");
-      }
-    }
-  }
-
   bool checkFavoured(String target) {
     debugPrint("Check favoured called");
     if (favouritesList.isNotEmpty) {
@@ -144,11 +133,17 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     debugPrint(mCity);
     if (checkFavourites(mCity) == false) {
       favouritesList.add(mCity);
-      favouritesApiCall.add(
-          "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey");
       debugPrint("$mCity added to favourites");
+      //favouritesApiCall.add(
+      //    "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey");
+
+      fireStore.collection("favourites").add({
+        "location": mCity,
+        "apiCall":
+            "http://api.airvisual.com/v2/city?city=$mCity&state=$mState&country=$mCountry&key=$kApiKey"
+      });
     } else if (checkFavourites(mCity) == true) {
-      removeFavourite(mCity);
+      //removeFavourite(mCity);
     }
   }
 
@@ -215,10 +210,11 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                 child: Column(
                   children: [
                     Text(
+                        // Display selected city name
                         style: TextStyle(
                           color:
                               Theme.of(context).colorScheme.onPrimaryContainer,
-                          fontSize: 30,
+                          fontSize: 28.sp,
                         ),
                         mCity),
                     SizedBox(
@@ -238,7 +234,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                     Text(
                       // Display weather status
                       style: TextStyle(
-                        fontSize: 25,
+                        fontSize: 20.sp,
                         color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                       (DisplayerWeatherIcon(mIcon).displayStatus()).toString(),
@@ -247,7 +243,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         style: TextStyle(
                           color:
                               Theme.of(context).colorScheme.onPrimaryContainer,
-                          fontSize: 100,
+                          fontSize: 80.sp,
                         ),
                         "$mTemperature°"),
                     Row(

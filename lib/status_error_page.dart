@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'globals.dart';
 
 class StatusErrorPage extends StatelessWidget {
   StatusErrorPage(String page, String errorCode) {
@@ -9,10 +8,12 @@ class StatusErrorPage extends StatelessWidget {
   late String mErrorCode;
   late String mPage;
 
+// Return error code
   String errorCode() {
     return "Status Code : $mErrorCode.";
   }
 
+// Display the correct error message depending on status code
   String errorMessage(String errorCode) {
     if (errorCode == "400") {
       return "Bad request has been made. Most likely incorrect api call.";

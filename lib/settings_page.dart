@@ -23,10 +23,7 @@ class _SettingsPageState extends State<SettingsPage> {
               color: Theme.of(context).iconTheme.color,
             ),
             "Settings"),
-        actions: [
-          //ChangeThemeButtonWidget(),
-          //ChangeBackGroundWidget(), //TODO : Make sure this works, will need ChangeNotifierProvider
-        ],
+        //actions: [],
       ),
       body: Card(
         child: Row(
@@ -44,11 +41,3 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 }
-
-
-        // decoration: BoxDecoration(
-        //   image: DecorationImage(
-        //     image: const AssetImage("lib/images/background (5).jpg"),
-        //     fit: BoxFit.cover,
-        //   ),
-        // ),

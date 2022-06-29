@@ -11,7 +11,8 @@ class FavouritesPage extends StatefulWidget {
 }
 
 class _FavouritesPageState extends State<FavouritesPage> {
-  // ListViewPage({Key key}) : super(key: key);
+  // how firebase will show favourites. Boolean as it will be toggled
+  bool ascendingOrder = true;
 
   void initState() {
     super.initState();
@@ -27,9 +28,9 @@ class _FavouritesPageState extends State<FavouritesPage> {
         title: TextButton(
             onPressed: () {
               setState(() {
-                //FavouritesPage;
+                // change view of user favourites
+                ascendingOrder = !ascendingOrder;
                 debugPrint("Favourites page button pressed");
-                //debugPrint(favouritesList[0]);
               });
             },
             child: Row(
@@ -42,9 +43,9 @@ class _FavouritesPageState extends State<FavouritesPage> {
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
+                    children: const [
                       Icon(
-                        Icons.refresh,
+                        Icons.sort_by_alpha_rounded,
                         color: Colors.white,
                       ),
                     ],
@@ -53,8 +54,12 @@ class _FavouritesPageState extends State<FavouritesPage> {
               ],
             )),
       ),
+      // Display data from firebase
       body: StreamBuilder<QuerySnapshot>(
-        stream: fireStore.collection("favourites").snapshots(),
+        stream: fireStore
+            .collection("favourites")
+            .orderBy("location", descending: ascendingOrder)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final documents = snapshot.data;
@@ -64,6 +69,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
               docWidgets.add(docWidget);
               //debugPrint(messageWidget.data);
             }
+            // Display data from firebase as interactable cards
             return ListView.builder(
               itemCount: docWidgets.length, // length of list
               itemBuilder: (BuildContext, index) {
@@ -77,6 +83,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
                   child: Card(
                     child: GestureDetector(
                       onTap: () {
+                        // on tap create page of the users selected favourite
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -124,6 +131,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
               },
             );
           } else {
+            // load error just in case but this should never be reached
             return StatusErrorPage(
               "Favourites Page",
               "Loading Error",

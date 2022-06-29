@@ -4,11 +4,13 @@ import 'package:provider/provider.dart';
 import 'page_navigation_bar.dart';
 import 'package:sizer/sizer.dart';
 import 'globals.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 Future main() async {
   // made Future for shared preferences
   WidgetsFlutterBinding.ensureInitialized();
-  await UserPreferences.init();
+  await Firebase.initializeApp(); // start up firebase
+  await UserPreferences.init(); // remember user preferences
 
   runApp(MyApp());
 }
@@ -18,8 +20,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeProvider; // Called to set shared Preferences
     return ChangeNotifierProvider(
+      // everytime there is a change in theme it will happen across the entire app
       create: (context) => ThemeProvider(),
       child: Sizer(
+        // Sizer for consistent screen dimensions across phones
         builder: (context, orientation, deviceType) {
           final themeProvider = Provider.of<ThemeProvider>(context);
           return MaterialApp(

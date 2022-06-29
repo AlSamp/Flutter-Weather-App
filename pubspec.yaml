@@ -43,6 +43,8 @@ dependencies:
   provider: ^6.0.3 # for system light/dark mode
   shared_preferences: ^2.0.15 # remember user preferences
   share_plus: ^4.0.8 # sharing data
+  firebase_core: ^1.18.0
+  cloud_firestore: ^3.1.18
 
 
 dev_dependencies:

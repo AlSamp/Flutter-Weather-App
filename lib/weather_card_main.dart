@@ -89,7 +89,7 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
               Text(
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    fontSize: 80.sp,
+                    fontSize: 70.sp,
                   ),
                   "${widget.mTemperature}°"),
               Row(
@@ -173,23 +173,3 @@ class _MainWeatherCardState extends State<MainWeatherCard> {
     );
   }
 }
-
-// weather icons from https://erikflowers.github.io/weather-icons/
-
-// TODO : Main Weather Card
-// TODO : Search Weather Card
-// TODO : Favourites Weather Card
-
-
-
-              // ExpansionTile(
-              //   //expandedCrossAxisAlignment: CrossAxisAlignment.center,
-              //   title: Text(''),
-              //   tilePadding: EdgeInsets.all(0),
-
-              //   children: <Widget>[
-              //     Text('Big Bang'),
-              //     Text('Birth of the Sun'),
-              //     Text('Earth is Born'),
-              //   ],
-              // ),
