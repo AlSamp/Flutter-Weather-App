@@ -8,8 +8,6 @@ import 'package:sizer/sizer.dart';
 import 'globals.dart';
 
 class ScreenNavigation extends StatefulWidget {
-  const ScreenNavigation({Key? key}) : super(key: key);
-
   @override
   State<ScreenNavigation> createState() => _ScreenNavigationState();
 }

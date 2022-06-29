@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_computing_assignment/globals.dart';
 import 'package:provider/provider.dart';
-import 'page_navigation_bar.dart';
+import 'screen_navigation.dart';
 import 'package:sizer/sizer.dart';
 import 'globals.dart';
 import 'package:firebase_core/firebase_core.dart';

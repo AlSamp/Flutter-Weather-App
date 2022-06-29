@@ -16,18 +16,6 @@ bool checkFavourites(String target) {
 
 final fireStore = FirebaseFirestore.instance;
 
-void messagesStream() async {
-  // listen to all changes with this collection
-
-  await for (var snapshot in fireStore.collection("favourites").snapshots()) {
-    // debugPrint("Printing list start");
-    //for (var message in snapshot.docs) {
-    //  debugPrint(message.data().toString());
-    //}
-    // debugPrint("Printing list end");
-  }
-}
-
 String _userKey = "user";
 
 // A class to store user preferences
@@ -122,5 +110,17 @@ class ChangeThemeButtonWidget extends StatelessWidget {
         provider.toggleTheme(value);
       },
     );
+  }
+}
+
+void messagesStream() async {
+  // listen to all changes with this collection
+
+  await for (var snapshot in fireStore.collection("favourites").snapshots()) {
+    // debugPrint("Printing list start");
+    //for (var message in snapshot.docs) {
+    //  debugPrint(message.data().toString());
+    //}
+    // debugPrint("Printing list end");
   }
 }
